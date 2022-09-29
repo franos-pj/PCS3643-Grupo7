@@ -1,4 +1,2 @@
 env
-book/__pycache__/
-book/migrations/__pycache__/
-MyProj/__pycache__/
+**/__pycache__
