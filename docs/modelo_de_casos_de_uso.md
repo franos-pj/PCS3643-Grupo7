@@ -83,7 +83,7 @@
 2. Sistema solicita código de voo.
 3. Usuário insere código de voo.
 4. Sistema verifica se código inserido corresponde a um voo já cadastrado.
-5. Usuário seleciona opção de atualizar _status_ ou informações temporais (data de chegada real e horário de chegada real, ou data de partida real e horário de partida real) do voo.
+5. Usuário seleciona opção de atualizar _status_ e/ou informações temporais (data de chegada real e horário de chegada real, ou data de partida real e horário de partida real) do voo.
 6. Sistema exibe informações referentes ao voo, e solicita a inserção do _status_ atualizado ou dos horários de chegada/partida reais do voo.
 7. Usuário atualiza _status_ do voo ou insere horários de chegada/partida reais do voo.
 8. Sistema exibe as informações atualizadas e solicita confirmação.
