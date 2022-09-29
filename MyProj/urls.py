@@ -19,5 +19,8 @@ from book import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('FIRST', views.bookview)
+    path('landing', views.firstView),
+    path('monitoring', views.monitoringView),
+    path('report', views.createReportView),
+    path('registration', views.flightRegistrationView)
 ]

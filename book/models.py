@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+# Classe Voo
+class Flight(models.Model):
+    pass
+
+# Classe Relatorio
+class Report(models.Model):
+    pass
