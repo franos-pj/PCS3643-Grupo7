@@ -44,4 +44,4 @@ python manage.py runserver
 
 5. Abra seu navegador a url `http://127.0.0.1:8000/admin/` para abrir a interface de administrador.
 
-6. Abra a aba `http://127.0.0.1:8000/FIRST` para ver a página principal.
+6. Abra a aba `http://127.0.0.1:8000/first` para ver a página principal.
