@@ -18,6 +18,7 @@
 
 ## Classes de entidade:
 
+- Rota (Route)
 - Voo (Flight)
 
 ## Diagramas de Classes:
