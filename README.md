@@ -18,8 +18,14 @@ Além disso, o plano de testes de validação elaborado para o projeto é aprese
 
 Para executar este projeto em seu computador:
 
+1. Clone o repositório, digitando no seu terminal o comando:
+``` 
+git clone https://github.com/franos-pj/PCS3643-Grupo7
+```
+
 1. Crie um ambiente virtual pelo comando: 
 ```
+cd PCS3643-Grupo7
 python -m venv env
 ```
 
@@ -40,6 +46,21 @@ pip install django
 4. Finalmente, para executar o projeto, rode o comando:
 ```
 python manage.py runserver
+```
+
+5. Crie as migrações pelo comando:
+```
+python manage.py makemigrations
+```
+
+6. Execute as migrações (criar o banco de dados) por meio do comando:
+```
+python manage.py migrate
+```
+
+7. Execute os testes pelo comando:
+```
+python manage.py test
 ```
 
 5. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
