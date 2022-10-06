@@ -8,7 +8,7 @@ Este é um projeto realizado na disciplina PCS3643 - Labortório de Engenharia d
 * Lucas Palmiro de Freitas - 11803396
 * Lucas von Ancken Garcia - 11257592
 
-O projeto consiste em um sistema de monitoramento de voos, de acordo com este [Enunciado]().
+O projeto consiste em um sistema de monitoramento de voos, de acordo com este [Enunciado](./docs/enunciado.pdf).
 
 O modelo de casos de uso e o modelo de classes elaborados para o projeto estão disponíveis em [Modelo de Casos de Uso](./docs/modelo_de_casos_de_uso.md) e [Modelo de Classes](./docs/modelo_de_classes.md).
 
