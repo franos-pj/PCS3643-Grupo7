@@ -42,6 +42,10 @@ pip install django
 python manage.py runserver
 ```
 
-5. Abra seu navegador a url `http://127.0.0.1:8000/admin/` para abrir a interface de administrador.
+5. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
 
-6. Abra a aba `http://127.0.0.1:8000/first` para ver a página principal.
+- `http://127.0.0.1:8000/admin/` - interface de administrador
+- `http://127.0.0.1:8000/landing` - página principal
+- `http://127.0.0.1:8000/monitoring` - interface de monitoramento
+- `http://127.0.0.1:8000/report` - interface de geração de relatórios
+- `http://127.0.0.1:8000/registration` - interface de cadastro
