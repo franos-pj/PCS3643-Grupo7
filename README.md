@@ -43,24 +43,24 @@ ou
 pip install django
 ```
 
-4. Finalmente, para executar o projeto, rode o comando:
-```
-python manage.py runserver
-```
-
-5. Crie as migrações pelo comando:
+4. Crie as migrações pelo comando:
 ```
 python manage.py makemigrations
 ```
 
-6. Execute as migrações (criar o banco de dados) por meio do comando:
+5. Execute as migrações (criar o banco de dados) por meio do comando:
 ```
 python manage.py migrate
 ```
 
-7. Execute os testes pelo comando:
+6. Execute os testes pelo comando:
 ```
 python manage.py test
+```
+
+7. Para executar o projeto, rode o comando:
+```
+python manage.py runserver
 ```
 
 8. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
