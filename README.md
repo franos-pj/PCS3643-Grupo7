@@ -63,7 +63,7 @@ python manage.py migrate
 python manage.py test
 ```
 
-5. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
+8. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
 
 - `http://127.0.0.1:8000/admin/` - interface de administrador
 - `http://127.0.0.1:8000/landing` - página principal
