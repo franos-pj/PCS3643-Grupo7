@@ -45,6 +45,7 @@ pip install django
 
 4. Crie as migrações pelo comando:
 ```
+cd src
 python manage.py makemigrations
 ```
 
