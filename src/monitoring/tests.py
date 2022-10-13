@@ -2,7 +2,7 @@ from django.test import TestCase
 import datetime
 
 # Test Models
-from book.models import Route, Flight
+from monitoring.models import Route, Flight
 
 
 class RouteModelTest(TestCase):
