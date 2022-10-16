@@ -3,14 +3,8 @@ from django.shortcuts import render
 def index(request):
     return render(request, 'index.html')
 
-def firstView(request):
-    return render(request, 'FIRST.html')
+def dashboard(request):
+    return render(request, 'Dashboard.html')
 
-def monitoringView(request):
-    return render(request, 'MONITORING.html')
-
-def createReportView(request):
-    return render(request, 'CREATE_REPORT.html')
-
-def flightRegistrationView(request):
-    return render(request, 'FLIGHT_REGISTRATION.html')
+def flightInfo(request):
+    return render(request, 'Flight_info.html')

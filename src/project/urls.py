@@ -18,10 +18,9 @@ from django.urls import path
 from monitoring import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('index', views.index),
-    path('landing', views.firstView),
-    path('monitoring', views.monitoringView),
-    path('report', views.createReportView),
-    path('registration', views.flightRegistrationView)
+    # Disabled admin site for the purpose of evaluation
+    # path('admin/', admin.site.urls),
+    path('', views.index, name='login'),
+    path('monitoring/dashboard', views.dashboard, name='dashboard'),
+    path('monitoring/Flight_info', views.flightInfo, name='flight'),
 ]
