@@ -22,5 +22,8 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', views.index, name='login'),
     path('monitoring/dashboard', views.dashboard, name='dashboard'),
-    path('monitoring/Flight_info', views.flightInfo, name='flight'),
+    path('monitoring/flight-info', views.flightInfo, name='flight'),
+    path('report', views.chooseReport, name='chooseReport'),
+    path('report/general', views.generalReport, name='generalReport'),
+    path('report/specific', views.specificReport, name='specificReport'),
 ]
