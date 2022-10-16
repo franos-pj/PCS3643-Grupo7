@@ -64,10 +64,11 @@ python manage.py test
 python manage.py runserver
 ```
 
-8. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
+1. Abra seu navegador na URL `http://127.0.0.1:8000`. No momento, as seguintes telas podem ser acessadas pela navegação da aplicação:
 
-- `http://127.0.0.1:8000/admin/` - interface de administrador
-- `http://127.0.0.1:8000/landing` - página principal
-- `http://127.0.0.1:8000/monitoring` - interface de monitoramento
-- `http://127.0.0.1:8000/report` - interface de geração de relatórios
-- `http://127.0.0.1:8000/registration` - interface de cadastro
+- `http://127.0.0.1:8000` - tela de login
+- `http://127.0.0.1:8000/monitoring/dashboard` - interface de monitoramento de voos
+- `http://127.0.0.1:8000/monitoring/flight-info` - tela com informações de um voo específico
+- `http://127.0.0.1:8000/report` - interface para a escolha do relatório a ser gerado
+- `http://127.0.0.1:8000/report/general` - tela de apresentação e download do relatório geral
+- `http://127.0.0.1:8000/report/specific` - tela de apresentação e download do relatório específico
