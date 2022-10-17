@@ -12,7 +12,9 @@ O projeto consiste em um sistema de monitoramento de voos, de acordo com este [E
 
 O modelo de casos de uso e o modelo de classes elaborados para o projeto estão disponíveis em [Modelo de Casos de Uso](./docs/modelo_de_casos_de_uso.md) e [Modelo de Classes](./docs/modelo_de_classes.md).
 
-Além disso, o plano de testes de validação elaborado para o projeto é apresentado em [Plano de Testes de Validação](./docs/plano_de_testes.md) e o diagrama entidade-relacionamento pode ser consultado em [Diagrama Entidade-Relacionamento](./docs/images/der.png).
+O plano de testes de validação elaborado para o projeto é apresentado em [Plano de Testes de Validação](./docs/plano_de_testes.md) e o diagrama entidade-relacionamento pode ser consultado em [Diagrama Entidade-Relacionamento](./docs/images/der.png).
+
+Os diagramas de navegação de telas podem ser visualizados em [Diagramas de Navegação de Telas](./docs/navegacao_telas.md).
 
 ## Guia de Instalação
 
@@ -30,13 +32,17 @@ python -m venv env
 ```
 
 2. Ative o ambiente usando o comando: 
-```
-.\env\bin\Activate.ps1
-```
-ou
+
+**Windows**
 ```
 .\env\scripts\Activate.ps1
 ```
+
+**Linux**
+```
+source env/bin/activate
+```
+
 
 3. Instale o django no ambiente criado por meio do seguinte comando:
 ```
@@ -45,6 +51,7 @@ pip install django
 
 4. Crie as migrações pelo comando:
 ```
+cd src
 python manage.py makemigrations
 ```
 
@@ -63,10 +70,19 @@ python manage.py test
 python manage.py runserver
 ```
 
-8. Abra seu navegador a url `http://127.0.0.1:8000/` e abra uma das seguintes abas:
+8. Abra seu navegador a url `http://127.0.0.1:8000` e abra uma das seguintes abas:
 
-- `http://127.0.0.1:8000/admin/` - interface de administrador
-- `http://127.0.0.1:8000/landing` - página principal
-- `http://127.0.0.1:8000/monitoring` - interface de monitoramento
-- `http://127.0.0.1:8000/report` - interface de geração de relatórios
-- `http://127.0.0.1:8000/registration` - interface de cadastro
+- `http://127.0.0.1:8000` - Tela de Autenticação
+- `http://127.0.0.1:8000/routes-and-flights` - Tela do Operador de Voo
+- `http://127.0.0.1:8000/routes-and-flights/routes-records` - Tela de Rotas
+- `http://127.0.0.1:8000/routes-and-flights/routes-records/info` - Tela de Visualização de Rota
+- `http://127.0.0.1:8000/routes-and-flights/routes-records/register` - Tela de Cadastro de Rota
+- `http://127.0.0.1:8000/routes-and-flights/flights-records` - Tela de Voos
+- `http://127.0.0.1:8000/routes-and-flights/flights-records/flights-record-info` - Tela de Visualização de Voo
+- `http://127.0.0.1:8000/routes-and-flights/flights-records/register` - Tela de Cadastro de Voo
+- `http://127.0.0.1:8000/monitoring/dashboard` - Tela do Painel de Monitoramento de Voos
+- `http://127.0.0.1:8000/monitoring/flight-info` - Tela de Atualização de Voo
+- `http://127.0.0.1:8000/report` - Tela de Geração de Relatório
+- `http://127.0.0.1:8000/report/general` - Tela de Visualização de Relatório Geral
+- `http://127.0.0.1:8000/report/specific` - Tela de Visualização de Relatório Específico
+
