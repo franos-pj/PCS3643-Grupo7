@@ -85,3 +85,4 @@ python manage.py runserver
 - `http://127.0.0.1:8000/report` - Tela de Geração de Relatório
 - `http://127.0.0.1:8000/report/general` - Tela de Visualização de Relatório Geral
 - `http://127.0.0.1:8000/report/specific` - Tela de Visualização de Relatório Específico
+
