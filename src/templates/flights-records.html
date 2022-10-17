@@ -2,124 +2,97 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <!-- CSS only -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-    />
-    <!-- JavaScript Bundle with Popper -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
-    ></script>
-    <script
-      src="https://kit.fontawesome.com/8e20749acf.js"
-      crossorigin="anonymous"
-    ></script>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/8e20749acf.js" crossorigin="anonymous"></script>
 
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-    <title>Routes and flights records control screen</title>
-  </head>
+  <title>Routes and flights records control screen</title>
+</head>
 
-  <body>
-    <div class="container mt-4">
-      <div class="row">
-        <h2 class="mb-4">Registros de Voos</h2>
-      </div>
-      <div class="row align-items-top">
-        <div class="col-md-6">
-          <div class="h-100 p-5 bg-light rounded-3">
-            <h2>Cadastro de Voos</h2>
-            <p>
-              Selecione "Cadastrar" caso deseje inserir um novo voo no sistema
-            </p>
-            <a
-              class="btn btn-outline-primary"
-              type="button"
-              href="{% url 'flightRegistration' %}"
-              >Cadastrar</a
-            >
-          </div>
+<body>
+  <div class="container mt-4">
+    <div class="row">
+      <h2 class="mb-4">Registros de Voos</h2>
+    </div>
+    <div class="row align-items-top">
+      <div class="col-md-6">
+        <div class="h-100 p-5 bg-light rounded-3">
+          <h2>Cadastro de Voos</h2>
+          <p>
+            Selecione "Cadastrar" caso deseje inserir um novo voo no sistema
+          </p>
+          <a class="btn btn-outline-primary" type="button" href="{% url 'flightRegistration' %}">Cadastrar</a>
         </div>
-        <div class="col-md-6">
-          <div class="h-100 p-5 text-bg-dark rounded-3">
-            <h2>Informações de Voo</h2>
-            <p>
-              Insira o código de voo e a data prevista abaixo para consultar ou excluir
-              um voo
-            </p>
-            <div class="row g-3 align-items-center">
-              <div class="col-auto">
-                <label for="flight-code" class="col-form-label"
-                  >Código de Voo</label
-                >
+      </div>
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-bg-dark rounded-3">
+          <h2>Informações de Voo</h2>
+          <p>
+            Insira o código de voo e a data prevista abaixo para consultar ou excluir
+            um voo
+          </p>
+          <div class="row g-3 align-items-center">
+            <div class="col-auto">
+              <label for="flight-code" class="col-form-label">Código de Voo</label>
+            </div>
+            <div class="col-auto">
+              <input type="text" id="flight-code" class="form-control" placeholder="Digite um código de voo" />
+            </div>
+            <div class="row form-group">
+              <label for="date" class="col-form-label">Data Prevista</label>
+              <div class="col-sm-4">
+                <div class="input-group date" id="datepicker">
+                  <input type="text" class="form-control">
+                  <span class="input-group-append">
+                    <span class="input-group-text bg-link-light d-block">
+                      <i class="fa fa-calendar"></i>
+                    </span>
+                  </span>
+                </div>
               </div>
               <div class="col-auto">
-                <input
-                  type="text"
-                  id="flight-code"
-                  class="form-control"
-                  placeholder="Digite um código de voo"
-                />
-              </div>
-              <div class="row form-group">
-                <label for="date" class="col-form-label">Data Prevista</label>
-                <div class="col-sm-4">
-                    <div class="input-group date" id="datepicker">
-                        <input type="text" class="form-control">
-                        <span class="input-group-append">
-                            <span class="input-group-text bg-link-light d-block">
-                                <i class="fa fa-calendar"></i>
-                            </span>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-auto">
-                  <a href="{% url 'routeInfo' %}" class="btn btn-outline-light">
-                    Buscar
-                  </a>
-                </div>
+                <a href="{% url 'flightRecordInfo' %}" class="btn btn-outline-light">
+                  Buscar
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
-        <a
-          href="{% url 'routesAndFlights' %}"
-          class="btn btn-danger col-auto mt-5"
-        >
-          Voltar à tela de voos e rotas
-        </a>
-      </div>
     </div>
-  </body>
-  <script type="text/javascript">
-    $(function() {
-        $('#datepicker').datepicker();
-    });
+    <div class="row">
+      <a href="{% url 'routesAndFlights' %}" class="btn btn-danger col-auto mt-5">
+        Voltar à tela de voos e rotas
+      </a>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+  $(function () {
+    $('#datepicker').datepicker();
+  });
 </script>
+
 </html>
