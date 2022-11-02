@@ -1,8 +1,12 @@
+{% load myfilters %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.5.1.js" 
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
+            crossorigin="anonymous"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <!-- CSS only -->
     <link
@@ -30,22 +34,30 @@
         <div class="mt-4">
           <div class="col-md-6">
             <div class="h-100 p-5 bg-light rounded-3">
-              <form>
+              <form method="POST" enctype="multipart/form-data" id = "routeRegistrationForm">
+                <!-- Security token -->
+                {% csrf_token %}
+
                 <div class="form-group  mt-2">
-                  <label for="flight-code">Código</label>
-                  <input type="text" class="form-control" id="flight-code" aria-describedby="code-help" placeholder="Digite um código de voo">
+                  {{ form.flightCode.label_tag }}
+                  {{form.flightCode|addclass:'form-control'}}
                   <small id="code-help" class="form-text text-muted">Um código ainda não cadastrado deve ser inserido</small>
                 </div>
                 <div class="form-group  mt-2">
-                  <label for="airline">Companhia</label>
-                  <input type="text" class="form-control" id="airline" placeholder="Digite um companhia aérea">
+                  {{ form.airline.label_tag }}
+                  {{form.airline|addclass:'form-control'}}
                 </div>
                 <div class="form-group  mt-2">
-                  <label for="airline">Destino</label>
-                  <input type="text" class="form-control" id="airline" placeholder="Digite o aeroporto de destino">
+                  {{ form.arrivalAirport.label_tag }}
+                  {{form.arrivalAirport|addclass:'form-control'}}
+                </div>
+                <div class="form-group  mt-2">
+                  {{ form.scheduledTime.label_tag }}
+                  {{form.scheduledTime|addclass:'form-control'}}
                 </div>
                 <button
-                  type="button"
+                  type = "button"
+                  id = "register"
                   class="btn btn-primary mt-5"
                   data-bs-toggle="modal"
                   data-bs-target="#registerModal"
@@ -90,13 +102,40 @@
           </div>
           <div class="modal-body">
             <p>Você deseja mesmo cadastrar uma nova rota com as informações abaixo?</p>
-            <div class="col-md-6">
+            <div class="col-md-12">
               <div class="mt-4">
-                <p><b>Rota:</b> AF443</p>
-                <p><b>Companhia:</b> Air France</p>
-                <p><b>Aeroporto de Origem:</b> FLL</p>
-                <p><b>Aeroporto de Destino:</b> CDG</p>
-                <p><b>Hora Prevista:</b> 10:30</p>
+                <ul class="list-group list-group-flush">
+                  <li class = "list-group-item" >
+                    <div class="row-col-8 d-inline-flex align-items-center">
+                      <b>Rota:</b>
+                      <p id = "flightCodeConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
+                    </div>
+                  </li>
+                  <li class = "list-group-item">
+                    <div class="row-col-8 d-inline-flex align-items-center">
+                      <b>Companhia:</b>
+                      <p id = "airlineConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
+                    </div>
+                  </li>
+                  <li class = "list-group-item">
+                    <div class="row-col-8 d-inline-flex align-items-center">
+                      <b>Aeroporto de Origem:</b>
+                      <p id = "departureConfirmation" style="margin-left: 8px;margin-bottom: 0px">FLL</p>
+                    </div>
+                  </li>
+                  <li class = "list-group-item">
+                    <div class="row-col-8 d-inline-flex align-items-center">
+                      <b>Aeroporto de Destino:</b>
+                      <p id = "arrivalConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
+                    </div>
+                  </li>
+                  <li class = "list-group-item">
+                    <div class="row-col-8 d-inline-flex align-items-center">
+                      <b>Hora Prevista:</b>
+                      <p id = "scheduledTimeConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
             <small class="text-muted">
@@ -117,7 +156,8 @@
               type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
-              data-bs-target="#registerConfirmedModal"
+              data-bs-target="#registerSucessFailureModal"
+              id = "submitButton"
               >
               <i class="bi bi-check-lg"></i>
               Confirmar</button
@@ -126,59 +166,75 @@
         </div>
       </div>
     </div>
-
     <div
-      class="modal fade"
-      id="registerConfirmedModal"
-      tabindex="-1"
-      aria-labelledby="registerConfirmedModalLabel"
-      aria-hidden="true"
+    class="modal fade"
+    id="registerSucessFailureModal"
+    tabindex="-1"
+    aria-labelledby="registerSucessFailureModalLabel"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-body  text-center">
-            <h4 class="modal-title text-success" id="registerConfirmedModalLabel">
-              Rota cadastrada com sucesso
-              <i class="bi bi-check2-circle"></i>
-            </h4>
+              <h4 class="modal-title text-danger" id="registerSucessFailureModalLabel">
+              </h4>
             <button
             type="button"
             class="btn btn-primary mt-4"
             data-bs-dismiss="modal"
             aria-label="Close"
-          >
-          OK
-          </button>
+            >
+            OK
+            </button>
         </div>
         </div>
       </div>
     </div>
-    <div
-      class="modal fade"
-      id="errorModal"
-      tabindex="-1"
-      aria-labelledby="errorModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-body  text-center">
-            <h4 class="modal-title text-danger" id="errorModalLabel">
-              Erro
-              <i class="bi bi-check2-circle"></i>
-            </h4>
 
-            <button
-            type="button"
-            class="btn btn-primary mt-4"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
-          OK
-          </button>
-        </div>
-        </div>
-      </div>
-    </div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+
+        $("#register").click(function(){
+          $("#flightCodeConfirmation").text($("#id_flightCode").val());
+          $("#airlineConfirmation").text($("#id_airline").val());
+          $("#arrivalConfirmation").text($("#id_arrivalAirport").val());
+          $("#scheduledTimeConfirmation").text($("#id_scheduledTime").val());
+        });
+
+        $("#submitButton").click(function() {
+          $("#routeRegistrationForm").submit()
+        })
+
+        $(document).on('submit', "#routeRegistrationForm", function(event) {
+          event.preventDefault();
+          $.ajax({
+            type:'POST',
+            url:'{% url "routeRegistration" %}',
+            dataType: 'json',
+            data:
+            {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                flightCode:$("#id_flightCode").val(),
+                airline: $("#id_airline").val(),
+                arrivalAirport: $("#id_arrivalAirport").val(),
+                scheduledTime: $("#id_scheduledTime").val(),
+            }, 
+            success: function(response) {
+                  if (response.success) {
+                      $('#registerSucessFailureModalLabel').text("Rota " + response.id + " cadastrada com sucesso ")
+                      $('#registerSucessFailureModalLabel').removeClass("text-danger")
+                      $('#registerSucessFailureModalLabel').addClass("text-success")
+                      $('#registerSucessFailureModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
+                  }
+                  else {
+                    $('#checkIcon').hide()
+                    $('#registerSucessFailureModalLabel').text("Não possível cadastrar a rota " + response.id + " ")
+                    $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
+                  }
+                }
+        })
+        })
+
+      })
+    </script>
   </body>
 </html>

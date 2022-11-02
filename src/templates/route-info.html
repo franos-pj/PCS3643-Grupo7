@@ -30,12 +30,12 @@
         <div class="mt-4">
           <div class="col-md-6">
             <div class="h-100 p-5 bg-light rounded-3">
-              <h2>Rota AF443</h2>
+              <h2>Rota {{route.flightCode}}</h2>
               <hr />
-              <p><b>Companhia:</b> Air France</p>
+              <p><b>Companhia:</b> {{route.airline}}</p>
               <p><b>Aeroporto de Origem:</b> FLL</p>
-              <p><b>Aeroporto de Destino:</b> CDG</p>
-              <p><b>Hora Prevista:</b> 10:30</p>
+              <p><b>Aeroporto de Destino:</b> {{route.arrivalAirport}}</p>
+              <p><b>Hora Prevista:</b> {{route.scheduledTime}}</p>
             </div>
           </div>
         </div>
