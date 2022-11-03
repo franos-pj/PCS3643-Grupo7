@@ -1,6 +1,6 @@
 from traceback import print_tb
 import json
-from django.shortcuts import HttpResponse, render, get_object_or_404
+from django.shortcuts import HttpResponse, render, get_object_or_404, redirect
 from .forms import *
 from .models import *
 
@@ -26,7 +26,18 @@ def routesAndFlights(request):
     return render(request, 'routes-and-flights.html')
 
 def routesRecords(request):
-    return render(request, 'routes-records.html')
+    if request.method == 'POST':
+        data = request.POST
+        print(data)
+        flightCode = data['flightCode']
+        redirectPath = 'routes-records/info/'+ flightCode + "/"
+        response = {
+            'success': True,
+            'redirectPath': redirectPath
+        }
+        return HttpResponse(json.dumps(response))
+    else:
+        return render(request, 'routes-records.html')
 
 def routeInfo(request, flightCode):
     context ={}
