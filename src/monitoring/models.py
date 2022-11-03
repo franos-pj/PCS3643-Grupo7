@@ -4,7 +4,7 @@ from django.db import models
 
 class User(models.Model):
     cpf = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=30, null=False)
+    username = models.CharField(max_length=30, unique=True, null=False)
     password = models.CharField(max_length=30, null=False)
     userType = models.CharField(max_length=20, null=False)
 

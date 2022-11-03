@@ -1,7 +1,5 @@
-from django.test import TestCase
 import datetime
-
-# Test Models
+from django.test import TestCase
 from monitoring.models import Route, Flight
 
 

@@ -3,6 +3,29 @@
 from django.db import migrations, models
 
 
+def createMockUsers(apps, schema_editor):
+    mockUsers = [
+        {"cpf": 14894686764, "username": "piloto",
+            "password": "euamoavioes", "userType": "PILOT"},
+        {"cpf": 68304729173, "username": "torre",
+            "password": "euamotorres", "userType": "TOWER"},
+        {"cpf": 12994434642, "username": "companhiaAerea",
+            "password": "euamodinheiro", "userType": "AIRLINE"},
+        {"cpf": 50326389361, "username": "operadordevoo",
+            "password": "euamooperacoes", "userType": "OPERATOR"},
+        {"cpf": 27859027534, "username": "gerente",
+            "password": "euamorelatorios", "userType": "MANAGER"}
+    ]
+
+    # We can't import the Person model directly as it may be a newer
+    # version than this migration expects. We use the historical version.
+    User = apps.get_model('monitoring', 'User')
+    for user in mockUsers:
+        obj = User(cpf=user["cpf"], username=user["username"],
+                   password=user["password"], userType=user["userType"])
+        obj.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -22,4 +45,5 @@ class Migration(migrations.Migration):
                 'db_table': 'usuarios',
             },
         ),
+        migrations.RunPython(createMockUsers),
     ]

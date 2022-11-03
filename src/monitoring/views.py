@@ -3,26 +3,26 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from .forms import UserLoginForm
+from monitoring.models import User
 
 
 def index(request):
 
-    # If this is a POST request then process the Form data
-    if request.method == 'GET':
+    loginForm = UserLoginForm(request.POST or None, request.FILES or None)
 
+    if (request.method == 'POST'):
         # Create a form instance and populate it with data from the request (binding):
-        loginForm = UserLoginForm(request.GET)
-
-        # Check if the form is valid:
-        if loginForm.is_valid():
-
+        user = User.objects.get(username=loginForm.data['username'])
+        if (user.password == loginForm.data['password']):
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('report/general'))
 
-    context = {
-        'loginForm': loginForm,
-    }
-    return render(request, "index.html", context=context)
+    else:
+
+        context = {
+            'loginForm': loginForm,
+        }
+        return render(request, "index.html", context=context)
 
 
 def dashboard(request):
