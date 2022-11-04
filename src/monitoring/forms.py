@@ -1,31 +1,94 @@
 from django import forms
-from .models import Route
- 
- 
+from .models import Route, Flight
+
+
 # creating a form
 class RouteForm(forms.ModelForm):
- 
+
     # create meta class
     class Meta:
         # specify model to be used
         model = Route
 
- 
         # specify fields to be used
         fields = "__all__"
 
         labels = {
-            'flightCode': 'Código',
-            'airline': 'Companhia',
-            'departureAirport': 'Origem',
-            'arrivalAirport': 'Destino',
-            'scheduledTime': 'Horário Previsto'
+            "flightCode": "Código",
+            "airline": "Companhia",
+            "departureAirport": "Origem",
+            "arrivalAirport": "Destino",
+            "scheduledTime": "Horário Previsto",
         }
-        
+
         widgets = {
-            'flightCode': forms.TextInput(attrs={'placeholder': 'Digite um código de voo'}),
-            'airline': forms.TextInput(attrs={'placeholder': 'Digite um companhia aérea'}),
-            'departureAirport': forms.TextInput(attrs={'placeholder': 'Digite o aeroporto de origem'}),
-            'arrivalAirport': forms.TextInput(attrs={'placeholder': 'Digite o aeroporto de destino'}),
-            'scheduledTime': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'})
+            "flightCode": forms.TextInput(
+                attrs={"placeholder": "Digite um código de voo"}
+            ),
+            "airline": forms.TextInput(
+                attrs={"placeholder": "Digite um companhia aérea"}
+            ),
+            "departureAirport": forms.TextInput(
+                attrs={"placeholder": "Digite o aeroporto de origem"}
+            ),
+            "arrivalAirport": forms.TextInput(
+                attrs={"placeholder": "Digite o aeroporto de destino"}
+            ),
+            "scheduledTime": forms.TimeInput(
+                attrs={"type": "time", "class": "form-control"}
+            ),
+        }
+
+
+class FlightForm(forms.ModelForm):
+
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Flight
+
+        # specify fields to be used
+        fields = "__all__"
+
+        labels = {
+            "flightCode": "Código",
+            "scheduledDate": "Data Prevista",
+            "realDate": "Data",
+            "realTime": "Hora",
+            "status": "Status",
+        }
+
+        CHOICES = {
+            "1": "embarcando",
+            "2": "cancelado",
+            "3": "programado",
+            "4": "taxiando",
+            "5": "pronto",
+            "6": "autorizado",
+            "7": "em voo",
+            "8": "aterrissado",
+        }
+
+        widgets = {
+            "flightCode": forms.TextInput(
+                attrs={
+                    # "class": "form-control",
+                    "placeholder": "Digite um código de voo",
+                }
+            ),
+            "scheduledDate": forms.TimeInput(
+                format=("%d-%m-%Y"),
+                attrs={
+                    "type": "date",
+                    # "class": "form-control",
+                    "placeholder": "Selecione uma data",
+                },
+            ),
+            "realDate": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
+            "realTime": forms.TimeInput(
+                attrs={"type": "time", "class": "form-control"}
+            ),
+            "status": forms.RadioSelect(attrs={"choices": CHOICES}),
         }
