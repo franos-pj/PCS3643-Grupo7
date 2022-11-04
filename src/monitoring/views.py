@@ -1,8 +1,10 @@
 from traceback import print_tb
 import json
-from django.shortcuts import HttpResponse, render, get_object_or_404, redirect
+from django.shortcuts import HttpResponse, render, get_object_or_404
 from .forms import *
 from .models import *
+from django.views.decorators.csrf import csrf_exempt
+
 
 def index(request):
     return render(request, 'index.html')
@@ -28,22 +30,62 @@ def routesAndFlights(request):
 def routesRecords(request):
     if request.method == 'POST':
         data = request.POST
-        print(data)
         flightCode = data['flightCode']
-        redirectPath = 'routes-records/info/'+ flightCode + "/"
-        response = {
-            'success': True,
-            'redirectPath': redirectPath
-        }
-        return HttpResponse(json.dumps(response))
+        if Route.objects.filter(flightCode=flightCode).exists():
+            redirectPath = 'routes-records/info/'+ flightCode + "/"
+            response = {
+                'success': True,
+                'id': flightCode,
+                'redirectPath': redirectPath
+            }
+            return HttpResponse(json.dumps(response))
+        else:
+            response = {
+                'success': False,
+                'id': flightCode,
+                'redirectPath': None
+            }
+            return HttpResponse(json.dumps(response))
     else:
         return render(request, 'routes-records.html')
 
+@csrf_exempt
 def routeInfo(request, flightCode):
     context ={}
+    print(request)
     route = get_object_or_404(Route, pk=flightCode)
-    print(request.GET)
+    form = RouteForm(request.POST or None, instance = route)
+    
+    if (request.method == 'POST'):
+        if form.is_valid():
+            form.save()
+            response = {
+                'id': form.cleaned_data["flightCode"],
+                'success': True,
+                'error': None
+            }
+            return HttpResponse(json.dumps(response))
+        else:
+            response = {
+                'id': form.cleaned_data["flightCode"],
+                'success': False,
+                'error': form.errors.as_json()
+            }
+            return HttpResponse(json.dumps(response))
+
+    elif (request.method == 'DELETE'):
+        deletion = route.delete()
+        print(deletion)
+        response = {
+            'id': flightCode,
+            'success': True
+        }
+        return HttpResponse(json.dumps(response))
+            
+
     context['route']= route
+    context['id'] = flightCode
+    context['form'] = form
     return render(request, 'route-info.html', context)
 
 def routeRegistration(request):
@@ -75,7 +117,6 @@ def routeRegistration(request):
         return HttpResponse(json.dumps(response)) 
 
     context['form']= form
-    print(context)
 
     return render(request, 'route-registration.html', context)
 

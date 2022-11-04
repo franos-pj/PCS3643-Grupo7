@@ -97,6 +97,29 @@
         </a>
       </div>
     </div>
+    <div
+    class="modal fade"
+    id="searchModal"
+    tabindex="-1"
+    aria-labelledby="searchModalLabel"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body  text-center">
+              <h4 class="modal-title text-danger" id="searchModalLabel">
+              </h4>
+            <button
+            type="button"
+            class="btn btn-primary mt-4"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            >
+            OK
+            </button>
+        </div>
+        </div>
+      </div>
+    </div>
     <script type="text/javascript">
       $(document).ready(function() {
 
@@ -113,14 +136,16 @@
             success: function(response) {
               console.log(response["success"])
               if (response.success) {
-                console.log(response.redirectPath)
                 window.location.href = response.redirectPath
+              }
+              else {
+                $("#searchModal").modal('show');
+                $('#searchModalLabel').text("Não possível encontrar a rota informada " + response.id + " ")
+                $('#searchModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
               }
             }
         })
       })
-
-
       })
     </script>
   </body>

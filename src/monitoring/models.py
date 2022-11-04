@@ -7,6 +7,7 @@ class Route(models.Model):
 
     flightCode = models.CharField(max_length=20, primary_key=True)
     airline = models.CharField(max_length=20, null=False)
+    departureAirport = models.CharField(max_length=3, null=False)
     arrivalAirport = models.CharField(max_length=3, null=False)
     scheduledTime = models.TimeField(null=False)
 

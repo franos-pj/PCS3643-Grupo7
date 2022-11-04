@@ -49,6 +49,10 @@
                   {{form.airline|addclass:'form-control'}}
                 </div>
                 <div class="form-group  mt-2">
+                  {{ form.departureAirport.label_tag }}
+                  {{form.departureAirport|addclass:'form-control'}}
+                </div>
+                <div class="form-group  mt-2">
                   {{ form.arrivalAirport.label_tag }}
                   {{form.arrivalAirport|addclass:'form-control'}}
                 </div>
@@ -121,7 +125,7 @@
                   <li class = "list-group-item">
                     <div class="row-col-8 d-inline-flex align-items-center">
                       <b>Aeroporto de Origem:</b>
-                      <p id = "departureConfirmation" style="margin-left: 8px;margin-bottom: 0px">FLL</p>
+                      <p id = "departureConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
                     </div>
                   </li>
                   <li class = "list-group-item">
@@ -139,10 +143,6 @@
                 </ul>
               </div>
             </div>
-            <small class="text-muted">
-              Esse modal corresponde à tela de Confirmação de Cadastro de
-              Rota, no diagrama de telas exposto na documentação.
-            </small>
           </div>
           <div class="modal-footer">
             <button
@@ -197,6 +197,7 @@
         $("#register").click(function(){
           $("#flightCodeConfirmation").text($("#id_flightCode").val());
           $("#airlineConfirmation").text($("#id_airline").val());
+          $("#departureConfirmation").text($("#id_departureAirport").val());
           $("#arrivalConfirmation").text($("#id_arrivalAirport").val());
           $("#scheduledTimeConfirmation").text($("#id_scheduledTime").val());
         });
@@ -216,6 +217,7 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 flightCode:$("#id_flightCode").val(),
                 airline: $("#id_airline").val(),
+                departureAirport: $("#id_departureAirport").val(),
                 arrivalAirport: $("#id_arrivalAirport").val(),
                 scheduledTime: $("#id_scheduledTime").val(),
             }, 
@@ -232,7 +234,7 @@
                     $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
                   }
                 }
-        })
+          })
         })
 
       })

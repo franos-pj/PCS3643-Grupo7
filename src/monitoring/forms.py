@@ -17,6 +17,7 @@ class RouteForm(forms.ModelForm):
         labels = {
             'flightCode': 'Código',
             'airline': 'Companhia',
+            'departureAirport': 'Origem',
             'arrivalAirport': 'Destino',
             'scheduledTime': 'Horário Previsto'
         }
@@ -24,6 +25,7 @@ class RouteForm(forms.ModelForm):
         widgets = {
             'flightCode': forms.TextInput(attrs={'placeholder': 'Digite um código de voo'}),
             'airline': forms.TextInput(attrs={'placeholder': 'Digite um companhia aérea'}),
+            'departureAirport': forms.TextInput(attrs={'placeholder': 'Digite o aeroporto de origem'}),
             'arrivalAirport': forms.TextInput(attrs={'placeholder': 'Digite o aeroporto de destino'}),
             'scheduledTime': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'})
         }
