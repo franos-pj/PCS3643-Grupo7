@@ -140,7 +140,7 @@ def flightRegistration(request):
         # save the form data to model
         form.save()
         response = {
-            "id": form.cleaned_data["flightCode"],
+            "id": None,
             "success": True,
             "error": None,
         }
@@ -150,7 +150,7 @@ def flightRegistration(request):
     elif request.method == "POST":
         print("form invalid", form.data)
         response = {
-            "id": form.data["flightCode"],
+            "id": None,
             "success": False,
             "error": form.errors.as_json(),
         }

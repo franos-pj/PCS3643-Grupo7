@@ -13,6 +13,9 @@ class Route(models.Model):
 
     class Meta:
         db_table = 'rotas'
+    
+    def __str__(self):
+        return self.flightCode
 
 
 class Flight(models.Model):
@@ -27,3 +30,4 @@ class Flight(models.Model):
 
     class Meta:
         db_table = 'voos'
+    

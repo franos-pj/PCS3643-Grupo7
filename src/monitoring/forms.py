@@ -48,10 +48,10 @@ class FlightForm(forms.ModelForm):
         model = Flight
 
         # specify fields to be used
-        fields = "__all__"
+        fields = ['route', 'scheduledDate', 'realDate', 'realTime', 'status']
 
         labels = {
-            "flightCode": "Código",
+            "route": "Código",
             "scheduledDate": "Data Prevista",
             "realDate": "Data",
             "realTime": "Hora",
@@ -70,7 +70,7 @@ class FlightForm(forms.ModelForm):
         }
 
         widgets = {
-            "flightCode": forms.TextInput(
+            "route": forms.TextInput(
                 attrs={
                     # "class": "form-control",
                     "placeholder": "Digite um código de voo",
@@ -92,3 +92,9 @@ class FlightForm(forms.ModelForm):
             ),
             "status": forms.RadioSelect(attrs={"choices": CHOICES}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super(FlightForm, self).__init__(*args, **kwargs)
+        print(Route.objects.values('flightCode'))
+        self.fields['route']=forms.ModelChoiceField(queryset=Route.objects.all(), empty_label="", label="Código de voo", )
+

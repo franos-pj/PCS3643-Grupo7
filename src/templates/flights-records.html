@@ -62,14 +62,9 @@
             </div>
             <div class="row form-group">
               <label for="date" class="col-form-label">Data Prevista</label>
-              <div class="col-sm-4">
-                <div class="input-group date" id="datepicker">
-                  <input type="text" class="form-control">
-                  <span class="input-group-append">
-                    <span class="input-group-text bg-link-light d-block">
-                      <i class="fa fa-calendar"></i>
-                    </span>
-                  </span>
+              <div class="col-sm-6">
+                <div id="datepicker">
+                  <input type="date" class="form-control">
                 </div>
               </div>
               <div class="col-auto">
@@ -90,9 +85,6 @@
   </div>
 </body>
 <script type="text/javascript">
-  $(function () {
-    $('#datepicker').datepicker();
-  });
 </script>
 
 </html>

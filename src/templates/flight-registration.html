@@ -34,14 +34,14 @@
               {% csrf_token %}
 
               <div class="form-group  mt-2">
-                {{ form.flightCode.label_tag }}
-                {{form.flightCode}}
+                {{ form.route.label_tag }}
+                {{form.route|addclass:'form-control'}}
                 <small id="code-help" class="form-text text-muted">Um código de voo já cadastrado deve ser
                   inserido</small>
               </div>
               <div class="form-group  mt-2">
                 {{ form.scheduledDate.label_tag }}
-                {{form.scheduledDate}}
+                {{form.scheduledDate|addclass:'form-control'}}
               </div>
               <button type="button" class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#registerModal">
                 <i class="bi bi-plus-lg"></i></i>
