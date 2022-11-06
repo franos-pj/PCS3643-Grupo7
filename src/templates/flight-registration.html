@@ -43,7 +43,8 @@
                 {{ form.scheduledDate.label_tag }}
                 {{form.scheduledDate|addclass:'form-control'}}
               </div>
-              <button type="button" class="btn btn-primary mt-5" data-bs-toggle="modal" data-bs-target="#registerModal">
+              <button type="button" id="register" class="btn btn-primary mt-5" data-bs-toggle="modal"
+                data-bs-target="#registerModal">
                 <i class="bi bi-plus-lg"></i></i>
                 Cadastrar
               </button>
@@ -72,53 +73,43 @@
           <p>Você deseja mesmo cadastrar um novo voo com as informações abaixo?</p>
           <div class="col-md-6">
             <div class="mt-4">
-              <p><b>Rota:</b> AF443</p>
-              <p><b>Data Prevista:</b> 02/07/2022</p>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <div class="row-col-8 d-inline-flex align-items-center">
+                    <b>Rota:</b>
+                    <p id="routeConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
+                  </div>
+                </li>
+                <li class="list-group-item">
+                  <div class="row-col-8 d-inline-flex align-items-center">
+                    <b>Data prevista:</b>
+                    <p id="scheduledDateConfirmation" style="margin-left: 8px;margin-bottom: 0px"></p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
-          <small class="text-muted">
-            Esse modal corresponde à tela de Confirmação de Cadastro de
-            Voo, no diagrama de telas exposto na documentação.
-          </small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
             Cancelar
           </button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerConfirmedModal">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#registerSucessFailureModal" id="submitButton">
             <i class="bi bi-check-lg"></i>
             Confirmar</button>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="modal fade" id="registerConfirmedModal" tabindex="-1" aria-labelledby="registerConfirmedModalLabel"
-    aria-hidden="true">
+  <div class="modal fade" id="registerSucessFailureModal" tabindex="-1"
+    aria-labelledby="registerSucessFailureModalLabel">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body  text-center">
-          <h4 class="modal-title text-success" id="registerConfirmedModalLabel">
-            Voo cadastrado com sucesso
-            <i class="bi bi-check2-circle"></i>
+          <h4 class="modal-title text-danger" id="registerSucessFailureModalLabel">
           </h4>
-          <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close">
-            OK
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body  text-center">
-          <h4 class="modal-title text-danger" id="errorModalLabel">
-            Erro
-            <i class="bi bi-check2-circle"></i>
-          </h4>
-
-          <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close">
+          <button type="button" id="okButton" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close">
             OK
           </button>
         </div>
@@ -130,42 +121,40 @@
     $(document).ready(function () {
 
       $("#register").click(function () {
-        $("#flightCodeConfirmation").text($("#id_flightCode").val());
-        $("#airlineConfirmation").text($("#id_airline").val());
-        $("#departureConfirmation").text($("#id_departureAirport").val());
-        $("#arrivalConfirmation").text($("#id_arrivalAirport").val());
-        $("#scheduledTimeConfirmation").text($("#id_scheduledTime").val());
+        $("#routeConfirmation").text($("#id_route").val());
+        $("#scheduledDateConfirmation").text($("#id_scheduledDate").val());
       });
 
       $("#submitButton").click(function () {
-        $("#routeRegistrationForm").submit()
+        $("#flightRegistrationForm").submit()
       })
 
-      $(document).on('submit', "#routeRegistrationForm", function (event) {
+      $("#okButton").click(function () {
+        window.location.reload();
+      })
+
+      $(document).on('submit', "#flightRegistrationForm", function (event) {
         event.preventDefault();
         $.ajax({
           type: 'POST',
-          url: '{% url "routeRegistration" %}',
+          url: '{% url "flightRegistration" %}',
           dataType: 'json',
           data:
           {
             csrfmiddlewaretoken: '{{ csrf_token }}',
-            flightCode: $("#id_flightCode").val(),
-            airline: $("#id_airline").val(),
-            departureAirport: $("#id_departureAirport").val(),
-            arrivalAirport: $("#id_arrivalAirport").val(),
-            scheduledTime: $("#id_scheduledTime").val(),
+            route: $("#id_route").val(),
+            scheduledDate: $("#id_scheduledDate").val(),
           },
           success: function (response) {
             if (response.success) {
-              $('#registerSucessFailureModalLabel').text("Rota " + response.id + " cadastrada com sucesso ")
+              $('#registerSucessFailureModalLabel').text("Voo " + response.id + " cadastrado com sucesso ")
               $('#registerSucessFailureModalLabel').removeClass("text-danger")
               $('#registerSucessFailureModalLabel').addClass("text-success")
               $('#registerSucessFailureModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
             }
             else {
               $('#checkIcon').hide()
-              $('#registerSucessFailureModalLabel').text("Não possível cadastrar a rota " + response.id + " ")
+              $('#registerSucessFailureModalLabel').text("Não possível cadastrar o voo " + response.id + " ")
               $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
             }
           }
