@@ -196,28 +196,17 @@
         </div>
       </div>
     </div>
-    <div
-      class="modal fade"
-      id="registerSucessFailureModal"
-      tabindex="-1"
-      aria-labelledby="registerSucessFailureModalLabel"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-body text-center">
-            <h4
-              class="modal-title text-danger"
-              id="registerSucessFailureModalLabel"
-            ></h4>
-            <button
-              type="button"
-              class="btn btn-primary mt-4"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
-              OK
-            </button>
-          </div>
+  </div>
+  <div class="modal fade" id="registerSucessFailureModal" tabindex="-1"
+    aria-labelledby="registerSucessFailureModalLabel">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body  text-center">
+          <h4 class="modal-title text-danger" id="registerSucessFailureModalLabel">
+          </h4>
+          <button type="button" id="okButton" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close">
+            OK
+          </button>
         </div>
       </div>
     </div>
@@ -235,42 +224,39 @@
         $('#submitButton').click(function () {
           $('#routeRegistrationForm').submit()
         })
+        
+      $("#okButton").click(function () {
+        window.location.reload();
+      })
 
-        $(document).on('submit', '#routeRegistrationForm', function (event) {
-          event.preventDefault()
-          $.ajax({
-            type: 'POST',
-            url: '{% url "routeRegistration" %}',
-            dataType: 'json',
-            data: {
-              csrfmiddlewaretoken: '{{ csrf_token }}',
-              flightCode: $('#id_flightCode').val(),
-              airline: $('#id_airline').val(),
-              departureAirport: $('#id_departureAirport').val(),
-              arrivalAirport: $('#id_arrivalAirport').val(),
-              scheduledTime: $('#id_scheduledTime').val(),
-            },
-            success: function (response) {
-              if (response.success) {
-                $('#registerSucessFailureModalLabel').text(
-                  'Rota ' + response.id + ' cadastrada com sucesso '
-                )
-                $('#registerSucessFailureModalLabel').removeClass('text-danger')
-                $('#registerSucessFailureModalLabel').addClass('text-success')
-                $('#registerSucessFailureModalLabel').append(
-                  '<i class="bi bi-check2-circle" id="checkIcon"></i>'
-                )
-              } else {
-                $('#checkIcon').hide()
-                $('#registerSucessFailureModalLabel').text(
-                  'Não possível cadastrar a rota ' + response.id + ' '
-                )
-                $('#registerSucessFailureModalLabel').append(
-                  '<i class="bi bi-emoji-frown" id = "failureIcon"></i>'
-                )
-              }
-            },
-          })
+      $(document).on('submit', "#routeRegistrationForm", function (event) {
+        event.preventDefault();
+        $.ajax({
+          type: 'POST',
+          url: '{% url "routeRegistration" %}',
+          dataType: 'json',
+          data:
+          {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            flightCode: $("#id_flightCode").val(),
+            airline: $("#id_airline").val(),
+            departureAirport: $("#id_departureAirport").val(),
+            arrivalAirport: $("#id_arrivalAirport").val(),
+            scheduledTime: $("#id_scheduledTime").val(),
+          },
+          success: function (response) {
+            if (response.success) {
+              $('#registerSucessFailureModalLabel').text("Rota " + response.id + " cadastrada com sucesso ")
+              $('#registerSucessFailureModalLabel').removeClass("text-danger")
+              $('#registerSucessFailureModalLabel').addClass("text-success")
+              $('#registerSucessFailureModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
+            }
+            else {
+              $('#checkIcon').hide()
+              $('#registerSucessFailureModalLabel').text("Não possível cadastrar a rota " + response.id + " ")
+              $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
+            }
+          }
         })
       })
     </script>

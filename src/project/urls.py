@@ -30,7 +30,19 @@ urlpatterns = [
     path('routes-and-flights/routes-records', views.routesRecords, name='routesRecords'),
     path('routes-and-flights/routes-records/info/<str:flightCode>/', views.routeInfo, name='routeInfo'),
     path('routes-and-flights/routes-records/register', views.routeRegistration, name='routeRegistration'),
-    path('routes-and-flights/flights-records', views.flightsRecords, name='flightsRecords'),
-    path('routes-and-flights/flights-records/register', views.flightRegistration, name='flightRegistration'),
-    path('routes-and-flights/flights-records/flights-record-info', views.flightRecordInfo, name='flightRecordInfo')
+    path(
+        "routes-and-flights/flights-records",
+        views.flightsRecords,
+        name="flightsRecords",
+    ),
+    path(
+        "routes-and-flights/flights-records/register",
+        views.flightRegistration,
+        name="flightRegistration",
+    ),
+    path(
+        "routes-and-flights/flights-records/flights-record-info/<str:route>/<str:scheduledDate>/",
+        views.flightRecordInfo,
+        name="flightRecordInfo",
+    )
 ]

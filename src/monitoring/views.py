@@ -165,11 +165,81 @@ def routeRegistration(request):
 
 
 def flightsRecords(request):
-    return render(request, "flights-records.html")
+    if request.method == "POST":
+        data = request.POST
+        route = data["route"]
+        scheduledDate = data["scheduledDate"]
+        if Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists():
+            redirectPath = (
+                "flights-records/flights-record-info/"
+                + route
+                + "/"
+                + scheduledDate
+                + "/"
+            )
+            response = {
+                "success": True,
+                "route": route,
+                "scheduledDate": scheduledDate,
+                "redirectPath": redirectPath,
+            }
+            return HttpResponse(json.dumps(response))
+        else:
+            response = {
+                "success": False,
+                "route": route,
+                "scheduledDate": scheduledDate,
+                "redirectPath": None,
+            }
+            return HttpResponse(json.dumps(response))
+    else:
+        return render(request, "flights-records.html")
 
 
-def flightRecordInfo(request):
-    return render(request, "flight-record-info.html")
+@csrf_exempt
+def flightRecordInfo(request, route, scheduledDate):
+    context = {}
+    print(request)
+    flight = get_object_or_404(Flight, route=route, scheduledDate=scheduledDate)
+    form = FlightForm(request.POST or None, instance=flight)
+
+    print(flight)
+    print(form)
+
+    # if request.method == "POST":
+    #     if form.is_valid():
+    #         form.save()
+    #         response = {
+    #             "route": form.cleaned_data["route"],
+    #             "scheduledDate": form.cleaned_data["scheduledDate"],
+    #             "success": True,
+    #             "error": None,
+    #         }
+    #         return HttpResponse(json.dumps(response))
+    #     else:
+    #         response = {
+    #             "route": form.cleaned_data["route"],
+    #             "scheduledDate": form.cleaned_data["scheduledDate"],
+    #             "success": False,
+    #             "error": form.errors.as_json(),
+    #         }
+    #         return HttpResponse(json.dumps(response))
+
+    if request.method == "DELETE":
+        deletion = flight.delete()
+        print(deletion)
+        response = {
+            "route": route,
+            "scheduledDate": scheduledDate,
+            "success": True,
+        }
+        return HttpResponse(json.dumps(response))
+
+    context["flight"] = flight
+    context["route"] = route
+    context["scheduledDate"] = scheduledDate
+    context["form"] = form
+    return render(request, "flight-record-info.html", context)
 
 
 def flightRegistration(request):
@@ -186,7 +256,7 @@ def flightRegistration(request):
         # save the form data to model
         form.save()
         response = {
-            "id": None,
+            "id": form.data["route"],
             "success": True,
             "error": None,
         }
@@ -196,7 +266,7 @@ def flightRegistration(request):
     elif request.method == "POST":
         print("form invalid", form.data)
         response = {
-            "id": None,
+            "id": form.data["route"],
             "success": False,
             "error": form.errors.as_json(),
         }
