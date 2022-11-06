@@ -32,7 +32,5 @@ urlpatterns = [
     path('routes-and-flights/routes-records/register', views.routeRegistration, name='routeRegistration'),
     path('routes-and-flights/flights-records', views.flightsRecords, name='flightsRecords'),
     path('routes-and-flights/flights-records/register', views.flightRegistration, name='flightRegistration'),
-    path('routes-and-flights/flights-records/flights-record-info', views.flightRecordInfo, name='flightRecordInfo'),
-    path('report/generate', views.FlightSpecificReport.as_view(), name='reportGenerate'),
-    path('report/general2', views.FlightGeneralReport.as_view(), name='reportGenerate2'),
+    path('routes-and-flights/flights-records/flights-record-info', views.flightRecordInfo, name='flightRecordInfo')
 ]

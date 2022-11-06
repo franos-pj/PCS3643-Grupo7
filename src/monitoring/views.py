@@ -68,7 +68,7 @@ def specificReport(request, startDate, endDate):
     start_date_obj = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
     end_date_obj = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
     queryset = Flight.objects.filter(scheduledDate__range=[start_date_obj,end_date_obj])
-    data = queryset.filter(status='aterrissado') | queryset.filter(status='cancelado').order_by('realDate')
+    data = queryset.filter(status='aterrissado') | queryset.filter(status='cancelado').order_by('scheduledDate')
     context['data'] = list(data)
     print(list(queryset))
     return render(request, "specific-report.html", context)
