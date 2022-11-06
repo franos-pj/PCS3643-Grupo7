@@ -24,8 +24,8 @@ urlpatterns = [
     path('monitoring/dashboard', views.dashboard, name='dashboard'),
     path('monitoring/flight-info', views.flightInfo, name='flight'),
     path('report', views.chooseReport, name='chooseReport'),
-    path('report/general', views.generalReport, name='generalReport'),
-    path('report/specific', views.specificReport, name='specificReport'),
+    path('report/general/<str:startDate>/<str:endDate>/', views.generalReport, name='generalReport'),
+    path('report/specific/<str:startDate>/<str:endDate>/', views.specificReport, name='specificReport'),
     path('routes-and-flights', views.routesAndFlights, name='routesAndFlights'),
     path('routes-and-flights/routes-records', views.routesRecords, name='routesRecords'),
     path('routes-and-flights/routes-records/info/<str:flightCode>/', views.routeInfo, name='routeInfo'),
@@ -33,4 +33,6 @@ urlpatterns = [
     path('routes-and-flights/flights-records', views.flightsRecords, name='flightsRecords'),
     path('routes-and-flights/flights-records/register', views.flightRegistration, name='flightRegistration'),
     path('routes-and-flights/flights-records/flights-record-info', views.flightRecordInfo, name='flightRecordInfo'),
+    path('report/generate', views.FlightSpecificReport.as_view(), name='reportGenerate'),
+    path('report/general2', views.FlightGeneralReport.as_view(), name='reportGenerate2'),
 ]
