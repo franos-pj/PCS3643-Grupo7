@@ -1,0 +1,222 @@
+[
+    {
+      "model": "monitoring.Route",
+      "pk": 1,
+      "fields": {
+        "flightCode": "UA679",
+        "airline": "United Airlines",
+        "departureAirport": "KORD",
+        "arrivalAirport": "FLL",
+        "scheduledTime": "10:30"
+      }
+    },
+    {
+      "model": "monitoring.Route",
+      "pk": 2,
+      "fields": {
+        "flightCode": "AF679",
+        "airline": "Air France",
+        "departureAirport": "CDG",
+        "arrivalAirport": "FLL",
+        "scheduledTime": "11:30"
+      }
+    },
+    {
+        "model": "monitoring.Route",
+        "pk": 3,
+        "fields": {
+          "flightCode": "LH679",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "MUC",
+          "scheduledTime": "19:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 4,
+        "fields": {
+          "flightCode": "LH122",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "BER",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 5,
+        "fields": {
+          "flightCode": "AA122",
+          "airline": "American Airlines",
+          "departureAirport": "FLL",
+          "arrivalAirport": "JFK",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 6,
+        "fields": {
+          "flightCode": "AF125",
+          "airline": "Air France",
+          "departureAirport": "FLL",
+          "arrivalAirport": "JFK",
+          "scheduledTime": "6:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 7,
+        "fields": {
+          "flightCode": "AF126",
+          "airline": "Air France",
+          "departureAirport": "CDG",
+          "arrivalAirport": "FLL",
+          "scheduledTime": "19:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 8,
+        "fields": {
+          "flightCode": "AF127",
+          "airline": "Air France",
+          "departureAirport": "CDG",
+          "arrivalAirport": "FLL",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 9,
+        "fields": {
+          "flightCode": "AF128",
+          "airline": "Air France",
+          "departureAirport": "FLL",
+          "arrivalAirport": "CDG",
+          "scheduledTime": "11:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 10,
+        "fields": {
+          "flightCode": "AF129",
+          "airline": "Air France",
+          "departureAirport": "FLL",
+          "arrivalAirport": "CDG",
+          "scheduledTime": "17:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 11,
+        "fields": {
+          "flightCode": "LH150",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "MUC",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 12,
+        "fields": {
+          "flightCode": "LH151",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "MUC",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 13,
+        "fields": {
+          "flightCode": "LH172",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "FRA",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 14,
+        "fields": {
+          "flightCode": "LH163",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "FRA",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 15,
+        "fields": {
+          "flightCode": "LH178",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "FRA",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 16,
+        "fields": {
+          "flightCode": "LH179",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "BER",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 17,
+        "fields": {
+          "flightCode": "LH234",
+          "airline": "Lufthansa",
+          "departureAirport": "HAM",
+          "arrivalAirport": "FFL",
+          "scheduledTime": "15:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 18,
+        "fields": {
+          "flightCode": "UA678",
+          "airline": "United Airlines",
+          "departureAirport": "FLL",
+          "arrivalAirport": "KORD",
+          "scheduledTime": "23:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 19,
+        "fields": {
+          "flightCode": "UA679",
+          "airline": "United Airlines",
+          "departureAirport": "FLL",
+          "arrivalAirport": "KORD",
+          "scheduledTime": "11:30"
+        }
+      },
+      {
+        "model": "monitoring.Route",
+        "pk": 20,
+        "fields": {
+          "flightCode": "LH152",
+          "airline": "Lufthansa",
+          "departureAirport": "FLL",
+          "arrivalAirport": "MUC",
+          "scheduledTime": "16:30"
+        }
+      }
+  ]

@@ -21,7 +21,7 @@
       src="https://kit.fontawesome.com/8e20749acf.js"
       crossorigin="anonymous"
     ></script>
-    <title>Specific report screen</title>
+    <title>Relatório Específico</title>
   </head>
 
   <body>
@@ -29,20 +29,62 @@
       <div class="row">
         <h2 class="mb-4">Visualização do relatório específico</h2>
         <small class="text-muted mb-4">
-          Aqui serão apresentadas as informações do relatório gerado.</small
+          Aqui são apresentadas as informações do relatório gerado.</small
         >
       </div>
-      <div class="row align-items-center">
-        <div class="col-auto">
-          <a
-            href="{% url 'chooseReport' %}"
-            type="button"
-            class="btn btn-outline-success"
-          >
-            <i class="fa fa-download pe-3" aria-hidden="true"></i>
-            Baixar relatório
-          </a>
-        </div>
+      <div class="row align-items-center mt-4">
+        <table class="table table-bordered">
+          <thead>
+            <tr class="text-light bg-primary">
+              <th scope="col">Código de Voo</th>
+              <th scope="col">Companhia</th>
+              <th scope="col">Status</th>
+              <th scope="col">Horário Previsto</th>
+              <th scope="col">Horário Real</th>
+              <th scope="col">Data Prevista</th>
+              <th scope="col">Data Real</th>
+              <th scope="col">Atraso</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for flight in data %}
+            {% if flight.delay == 'cancelado' %}
+            <tr class="table-danger">
+              <th scope="row">{{flight.route.flightCode}}</th>
+              <td>{{flight.route.airline}}</td>
+              <td scope="row">{{flight.status}}</td>
+              <td>{{flight.route.scheduledTime}}</td>
+              <td>{{flight.realTime}}</td>
+              <td>{{flight.scheduledDate}}</td>
+              <td>{{flight.realDate}}</td>
+              <td>{{flight.delay}}</td>
+            </tr>
+            {% elif flight.delay == 'sem atraso' %}
+            <tr class="table-success">
+              <th scope="row">{{flight.route.flightCode}}</th>
+              <td>{{flight.route.airline}}</td>
+              <td scope="row">{{flight.status}}</td>
+              <td>{{flight.route.scheduledTime}}</td>
+              <td>{{flight.realTime}}</td>
+              <td>{{flight.scheduledDate}}</td>
+              <td>{{flight.realDate}}</td>
+              <td>{{flight.delay}}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <th scope="row">{{flight.route.flightCode}}</th>
+              <td>{{flight.route.airline}}</td>
+              <td scope="row">{{flight.status}}</td>
+              <td>{{flight.route.scheduledTime}}</td>
+              <td>{{flight.realTime}}</td>
+              <td>{{flight.scheduledDate}}</td>
+              <td>{{flight.realDate}}</td>
+              <td>{{flight.delay}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
       <div class="row">
         <a href="{% url 'chooseReport' %}" class="btn btn-danger col-auto mt-5">

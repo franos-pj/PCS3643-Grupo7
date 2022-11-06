@@ -20,26 +20,16 @@ from monitoring import views
 urlpatterns = [
     # Disabled admin site for the purpose of evaluation
     # path('admin/', admin.site.urls),
-    path("", views.index, name="login"),
-    path("monitoring/dashboard", views.dashboard, name="dashboard"),
-    path("monitoring/flight-info", views.flightInfo, name="flight"),
-    path("report", views.chooseReport, name="chooseReport"),
-    path("report/general", views.generalReport, name="generalReport"),
-    path("report/specific", views.specificReport, name="specificReport"),
-    path("routes-and-flights", views.routesAndFlights, name="routesAndFlights"),
-    path(
-        "routes-and-flights/routes-records", views.routesRecords, name="routesRecords"
-    ),
-    path(
-        "routes-and-flights/routes-records/info/<str:flightCode>/",
-        views.routeInfo,
-        name="routeInfo",
-    ),
-    path(
-        "routes-and-flights/routes-records/register",
-        views.routeRegistration,
-        name="routeRegistration",
-    ),
+    path('', views.index, name='login'),
+    path('monitoring/dashboard', views.dashboard, name='dashboard'),
+    path('monitoring/flight-info', views.flightInfo, name='flight'),
+    path('report', views.chooseReport, name='chooseReport'),
+    path('report/general/<str:startDate>/<str:endDate>/', views.generalReport, name='generalReport'),
+    path('report/specific/<str:startDate>/<str:endDate>/', views.specificReport, name='specificReport'),
+    path('routes-and-flights', views.routesAndFlights, name='routesAndFlights'),
+    path('routes-and-flights/routes-records', views.routesRecords, name='routesRecords'),
+    path('routes-and-flights/routes-records/info/<str:flightCode>/', views.routeInfo, name='routeInfo'),
+    path('routes-and-flights/routes-records/register', views.routeRegistration, name='routeRegistration'),
     path(
         "routes-and-flights/flights-records",
         views.flightsRecords,
@@ -54,5 +44,5 @@ urlpatterns = [
         "routes-and-flights/flights-records/flights-record-info/<str:route>/<str:scheduledDate>/",
         views.flightRecordInfo,
         name="flightRecordInfo",
-    ),
+    )
 ]
