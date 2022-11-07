@@ -37,6 +37,17 @@
           <form method="POST" enctype="multipart/form-data" id="flightUpdateForm">
             <!-- Security token -->
             {% csrf_token %}
+            {% if timeInputDisabled %}
+            <div class="form-group  mt-2">
+              <label for="realDate">Data Real</label>
+              <input type="date" class="form-control" id="realDate" aria-describedby="realDateHelp" disabled>
+              <small id="realDate" class="form-text text-muted">A data real deve ser igual ou posterior a data prevista</small>
+            </div>
+            <div class="form-group  mt-2">
+              <label for="realTime">Horário Real</label>
+              <input type="time" class="form-control" id="realTime" disabled>
+            </div>
+            {% else %}
             <div class="form-group  mt-2">
               <label for="realDate">Data Real</label>
               <input type="date" class="form-control" id="realDate" aria-describedby="realDateHelp">
@@ -46,6 +57,7 @@
               <label for="realTime">Horário Real</label>
               <input type="time" class="form-control" id="realTime">
             </div>
+            {% endif %}
             <div class="form-group  mt-2">
               <label for="status">Status</label>
               <select class="form-control" id='status'>
@@ -179,9 +191,9 @@
             <h5 class="modal-title text-success" id="updateConfirmedModalLabel">
               <i class="bi bi-check2-circle"></i>
             </h5>
-            <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close" id="okButton">
+            <a href="{% url 'dashboard' %}" type="button" class="btn btn-primary mt-4">
               OK
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -195,10 +207,6 @@
 
         $("#submitButton").click(function () {
           $("#flightUpdateForm").submit()
-        })
-
-        $("#okButton").click(function () {
-          window.location.reload();
         })
 
         $(document).on('submit', "#flightUpdateForm", function (event) {

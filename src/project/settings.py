@@ -64,9 +64,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        'libraries': {
-            'myfilters': 'templatetags.myfilters',
-        }
+            'libraries': {
+                'myfilters': 'templatetags.myfilters',
+            }
         },
     },
 ]
@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'airportDB.sqlite3',
     }
 }
 
@@ -115,6 +115,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'monitoring.User'
+
+LOGIN_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
