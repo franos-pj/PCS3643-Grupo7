@@ -12,7 +12,8 @@ optionsStatusDepartureConst = {
     "pronto": ["autorizado", "cancelado"],
     "autorizado": ["em voo", "cancelado"],
     "em voo": ["decolagem finalizada"],
-    "decolagem finalizada": []
+    "decolagem finalizada": [],
+    "cancelado": []
 }
 
 optionsStatusArrivalConst = {
@@ -21,7 +22,8 @@ optionsStatusArrivalConst = {
     "taxiando": ["pronto"],
     "pronto": ["autorizado"],
     "autorizado": ["aterrissado"],
-    "aterrissado": []
+    "aterrissado": [],
+    "cancelado": []
 }
 
 def index(request):
