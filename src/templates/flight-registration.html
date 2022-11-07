@@ -160,14 +160,14 @@
             },
             success: function (response) {
               if (response.success) {
-                $('#registerSucessFailureModalLabel').text("Voo " + response.id + " cadastrado com sucesso ")
+                $('#registerSucessFailureModalLabel').text("Voo " + response.route + " (" + response.scheduledDate + ") cadastrado com sucesso ")
                 $('#registerSucessFailureModalLabel').removeClass("text-danger")
                 $('#registerSucessFailureModalLabel').addClass("text-success")
                 $('#registerSucessFailureModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
               }
               else {
                 $('#checkIcon').hide()
-                $('#registerSucessFailureModalLabel').text("Não possível cadastrar o voo " + response.id + " ")
+                $('#registerSucessFailureModalLabel').text("Não possível cadastrar o voo " + response.route + " (" + response.scheduledDate + ") ")
                 $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
               }
             }

@@ -393,7 +393,8 @@ def flightRegistration(request):
         # save the form data to model
         form.save()
         response = {
-            "id": form.data["route"],
+            "route": form.data["route"],
+            "scheduledDate": form.data["scheduledDate"],
             "success": True,
             "error": None,
         }
@@ -403,7 +404,8 @@ def flightRegistration(request):
     elif request.method == "POST":
         print("form invalid", form.data)
         response = {
-            "id": form.data["route"],
+            "route": form.data["route"],
+            "scheduledDate": form.data["scheduledDate"],
             "success": False,
             "error": form.errors.as_json(),
         }
