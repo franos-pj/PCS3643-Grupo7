@@ -1,12 +1,12 @@
 from django import forms
-from .models import User
+from django.contrib.auth import get_user_model
 
 
 class UserLoginForm(forms.ModelForm):
 
     class Meta:
-        model = User
-        exclude = ("cpf", "userType")
+        model = get_user_model()
+        fields = ['username', 'password']
 
         labels = {
             'username': 'Nome do usuário',

@@ -1,15 +1,9 @@
-from unittest.util import _MAX_LENGTH
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class User(models.Model):
-    cpf = models.IntegerField(primary_key=True)
-    username = models.CharField(max_length=30, unique=True, null=False)
-    password = models.CharField(max_length=30, null=False)
-    userType = models.CharField(max_length=20, null=False)
-
-    class Meta:
-        db_table = 'usuarios'
+class User(AbstractUser):
+    pass
 
 
 class Route(models.Model):
@@ -36,4 +30,16 @@ class Flight(models.Model):
     status = models.CharField(max_length=20, null=True)
 
     class Meta:
+        permissions = (
+            ('can_change_scheduled_date_flight',
+             'Can change scheduled date for flights'),
+            ('can_change_real_date_flight', 'Can change real date for flights'),
+            ('can_change_real_time_flight', 'Can change real time for flights'),
+            ('can_change_status_as_airline_flight',
+             'Can change flight status as airline'),
+            ('can_change_status_as_tower_flight',
+             'Can change flight status as control tower'),
+            ('can_change_status_as_pilot_flight',
+             'Can change flight status as pilot'),
+        )
         db_table = 'voos'
