@@ -12,24 +12,19 @@ from django.db.models import Count, F, Q, ExpressionWrapper, DurationField
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-optionsStatusDepartureConst = {
-    "programado": ["embarcando", "cancelado"],
-    "embarcando": ["pronto", "cancelado"],
-    "pronto": ["autorizado", "cancelado"],
-    "autorizado": ["em voo", "cancelado"],
-    "em voo": ["decolagem finalizada"],
-    "decolagem finalizada": [],
-    "cancelado": []
+statusDeparturePermissionTree = {
+    "Airlines": {"nao iniciado": ["embarcando", "cancelado"],
+                 "embarcando": ["programado", "cancelado"]},
+    "Pilots": {"taxiando": ["pronto", "cancelado"],
+               "autorizado": ["em voo", "cancelado"]},
+    "ControlTower": {"programado": ["taxiando", "cancelado"],
+                     "pronto": ["autorizado", "cancelado"],
+                     "em voo": ["decolagem finalizada"]},
 }
 
-optionsStatusArrivalConst = {
-    "programado": ["cancelado", "em voo"],
-    "em voo": ["taxiando"],
-    "taxiando": ["pronto"],
-    "pronto": ["autorizado"],
-    "autorizado": ["aterrissado"],
-    "aterrissado": [],
-    "cancelado": []
+statusArrivalPermissionTree = {
+    "ControlTower": {"nao iniciado": ["em voo"],
+                     "em voo": ["aterrisado"]},
 }
 
 
@@ -84,15 +79,18 @@ def dashboard(request):
 @user_passes_test(lambda user: Group.objects.get(user=user).name
                   in ['Pilots', 'Airlines', 'ControlTower'])
 def flightInfo(request, flightId):
+
+    userGroup = Group.objects.get(user=request.user).name
+
     context = {}
     flight = get_object_or_404(Flight, flightId=flightId)
     flightCurrentStatus = flight.status
     if (flightCurrentStatus is None):
-        flightCurrentStatus = 'programado'
+        flightCurrentStatus = 'nao iniciado'
     if (flight.route.arrivalAirport == "FLL"):
-        optionStatus = optionsStatusArrivalConst[flightCurrentStatus]
+        optionStatus = statusArrivalPermissionTree[userGroup][flightCurrentStatus]
     else:
-        optionStatus = optionsStatusDepartureConst[flightCurrentStatus]
+        optionStatus = statusDeparturePermissionTree[userGroup][flightCurrentStatus]
     if request.method == "POST":
         error = False
         error_msg = '<p>Os seguintes campos não estão presentes</p>'
