@@ -22,7 +22,7 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', views.index, name='login'),
     path('monitoring/dashboard', views.dashboard, name='dashboard'),
-    path('monitoring/flight-info', views.flightInfo, name='flight'),
+    path('monitoring/flight-info/<int:flightId>', views.flightInfo, name='flight'),
     path('report', views.chooseReport, name='chooseReport'),
     path('report/general/<str:startDate>/<str:endDate>/', views.generalReport, name='generalReport'),
     path('report/specific/<str:startDate>/<str:endDate>/', views.specificReport, name='specificReport'),

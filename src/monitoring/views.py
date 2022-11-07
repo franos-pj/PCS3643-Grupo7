@@ -6,17 +6,103 @@ from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count, F, Q, ExpressionWrapper, DurationField
 
+optionsStatusDepartureConst = {
+    "programado": ["embarcando","cancelado"],
+    "embarcando": ["pronto", "cancelado"],
+    "pronto": ["autorizado", "cancelado"],
+    "autorizado": ["em voo", "cancelado"],
+    "em voo": ["decolagem finalizada"],
+    "decolagem finalizada": [],
+    "cancelado": []
+}
+
+optionsStatusArrivalConst = {
+    "programado": ["cancelado", "em voo"],
+    "em voo": ["taxiando"],
+    "taxiando": ["pronto"],
+    "pronto": ["autorizado"],
+    "autorizado": ["aterrissado"],
+    "aterrissado": [],
+    "cancelado": []
+}
 
 def index(request):
     return render(request, "index.html")
 
 
 def dashboard(request):
-    return render(request, "Dashboard.html")
+    context = {}
+    flightList = Flight.objects.all().exclude(status='cancelado').exclude(status='aterrissado').exclude(status='decolagem finalizada').order_by('-scheduledDate')
+    context['flightList']=flightList
+    return render(request, "Dashboard.html", context)
 
 
-def flightInfo(request):
-    return render(request, "flight-info.html")
+def flightInfo(request, flightId):
+    context={}
+    flight = get_object_or_404(Flight, flightId=flightId)
+    flightCurrentStatus = flight.status
+    if (flightCurrentStatus is None):
+        flightCurrentStatus = 'programado'
+    if (flight.route.arrivalAirport == "FLL"):
+        optionStatus = optionsStatusArrivalConst[flightCurrentStatus]
+    else:
+        optionStatus = optionsStatusDepartureConst[flightCurrentStatus]
+    if request.method == "POST":
+        error = False
+        error_msg = '<p>Os seguintes campos não estão presentes</p>'
+        updateDate = request.POST
+        realTimeUpdate = updateDate['realTime']
+        realDateUpdate = updateDate['realDate']
+        statusUpdate = updateDate['status']
+        if (statusUpdate == 'decolagem finalizada' or statusUpdate=='aterrissado'):
+
+            if (len(realTimeUpdate) > 0):
+                realTimeUpdateObj = datetime.datetime.strptime(realTimeUpdate, '%H:%M').time()
+            else:
+                error = True
+                error_msg = error_msg + '<p>Horário Real</p>'
+            print(flight.realTime)
+            if (len(realDateUpdate) > 0):
+                realDateUpdateObj = datetime.datetime.strptime(realDateUpdate, '%Y-%m-%d').date()
+                if (flight.scheduledDate <  realDateUpdateObj):
+                    flight.realDate = realDateUpdateObj
+                    flight.realTime = realTimeUpdateObj
+                elif (flight.scheduledDate ==  realDateUpdateObj and realTimeUpdateObj >= flight.route.scheduledTime):
+                    flight.realDate = realDateUpdateObj
+                    flight.realTime = realTimeUpdateObj
+                else:
+                    error = True
+                    error_msg = '<p>Entrada inválida: Momento real deve ser posterior à previsão</p>'
+            else:
+                error = True
+                error_msg = error_msg + '<p>Data Real</p>'
+
+        if (statusUpdate != flightCurrentStatus):
+            flight.status = statusUpdate
+        else:
+            error = True
+            error_msg = '<p>Não houve atualização de status</p>'
+
+        if (not error):
+            response = {
+                'success': True,
+                'id': flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+                'error_msg': None
+            }
+            flight.save()
+        else:
+            response = {
+                'success': False,
+                'id': flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+                'error_msg': error_msg + '</li>'
+            }
+        print(error_msg)
+        return HttpResponse(json.dumps(response)) 
+    print(optionStatus)
+    context['flight'] = flight
+    context['optionStatus'] = optionStatus
+    context['flightCurrentStatus'] = flightCurrentStatus
+    return render(request, "flight-info.html", context)
 
 
 def chooseReport(request):
