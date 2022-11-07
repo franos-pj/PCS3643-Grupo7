@@ -25,7 +25,7 @@
     <div class="container mt-4">
       <div class="row">
         <div class="col-6">
-          <h2>Log-in</h2>
+          <h2>Autenticação</h2>
           <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group  mt-2">
@@ -36,7 +36,7 @@
               {{ loginForm.password.label_tag }}
               {{ loginForm.password|addclass:'form-control'}}
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary mt-4">Fazer login</button>
           </form>
         </div>
       </div>
