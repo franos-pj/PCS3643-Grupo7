@@ -1,86 +1,110 @@
 [
-    {
-      "model": "monitoring.Flight",
-      "pk": 1,
-      "fields": {
-        "route": "UA679",
-        "scheduledDate": "2022-10-24",
-        "realDate": "2022-10-24",
-        "realTime": "11:30",
-        "status": "aterrissado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 2,
-      "fields": {
-        "route": "UA679",
-        "scheduledDate": "2022-10-27",
-        "realDate": "2022-10-27",
-        "realTime": "10:30",
-        "status": "aterrissado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 3,
-      "fields": {
-        "route": "LH163",
-        "scheduledDate": "2022-10-24",
-        "realDate": "2022-10-24",
-        "realTime": "15:30",
-        "status": "aterrissado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 4,
-      "fields": {
-        "route": "LH163",
-        "scheduledDate": "2022-10-27",
-        "realDate": "2022-10-27",
-        "realTime": "16:30",
-        "status": "aterrissado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 5,
-      "fields": {
-        "route": "LH163",
-        "scheduledDate": "2022-10-30",
-        "realDate": "2022-10-30",
-        "realTime": "15:45",
-        "status": "aterrissado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 6,
-      "fields": {
-        "route": "LH163",
-        "scheduledDate": "2022-10-11",
-        "realDate": "2022-10-11",
-        "realTime": "17:30",
-        "status": "aterrissado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 7,
-      "fields": {
-        "route": "LH163",
-        "scheduledDate": "2022-11-11",
-        "status": "cancelado"
-      }
-    },
-    {
-      "model": "monitoring.Flight",
-      "pk": 8,
-      "fields": {
-        "route": "LH163",
-        "scheduledDate": "2022-11-13",
-        "status": "cancelado"
-      }
+  {
+    "model": "monitoring.Flight",
+    "pk": 1,
+    "fields": {
+      "route": "UA679",
+      "scheduledDate": "2022-10-24",
+      "realDate": "2022-10-24",
+      "realTime": "11:30",
+      "status": "aterrissado"
     }
-  ]
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 2,
+    "fields": {
+      "route": "UA679",
+      "scheduledDate": "2022-10-27",
+      "realDate": "2022-10-27",
+      "realTime": "10:30",
+      "status": "aterrissado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 3,
+    "fields": {
+      "route": "LH163",
+      "scheduledDate": "2022-10-24",
+      "realDate": "2022-10-24",
+      "realTime": "15:30",
+      "status": "aterrissado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 4,
+    "fields": {
+      "route": "LH163",
+      "scheduledDate": "2022-10-27",
+      "realDate": "2022-10-27",
+      "realTime": "16:30",
+      "status": "aterrissado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 5,
+    "fields": {
+      "route": "LH163",
+      "scheduledDate": "2022-10-30",
+      "realDate": "2022-10-30",
+      "realTime": "15:45",
+      "status": "aterrissado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 6,
+    "fields": {
+      "route": "LH163",
+      "scheduledDate": "2022-10-11",
+      "realDate": "2022-10-11",
+      "realTime": "17:30",
+      "status": "aterrissado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 7,
+    "fields": {
+      "route": "LH163",
+      "scheduledDate": "2022-11-11",
+      "status": "cancelado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 8,
+    "fields": {
+      "route": "LH163",
+      "scheduledDate": "2022-11-13",
+      "status": "cancelado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 9,
+    "fields": {
+      "route": "AA122",
+      "scheduledDate": "2022-11-14"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 10,
+    "fields": {
+      "route": "LH151",
+      "scheduledDate": "2022-12-02"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 11,
+    "fields": {
+      "route": "UA679",
+      "scheduledDate": "2022-12-06"
+    }
+  }
+]
