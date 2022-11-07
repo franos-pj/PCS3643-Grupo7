@@ -25,72 +25,25 @@
       <div class="row">
         <h2>Dashboard de monitoramento de voos</h2>
         <p>Tela atualmente preenchida com dados estáticos</p>
-        <div class="list-group">
-          <a
-            href="{% url 'flight' %}"
-            class="list-group-item list-group-item-action"
-          >
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">AF443</h5>
-              <small>10:30, 26/11/2022</small>
-            </div>
-            <div class="d-flex w-100 justify-content-between">
-              <p class="mb-1">STATUS: embarcando</p>
-              <small class="text-muted">Clique para mais informações!</small>
-            </div>
-          </a>
-          <a
-            href="{% url 'flight' %}"
-            class="list-group-item list-group-item-action"
-          >
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">AF443</h5>
-              <small>10:30, 26/11/2022</small>
-            </div>
-            <div class="d-flex w-100 justify-content-between">
-              <p class="mb-1">STATUS: embarcando</p>
-              <small class="text-muted">Clique para mais informações!</small>
-            </div>
-          </a>
-          <a
-            href="{% url 'flight' %}"
-            class="list-group-item list-group-item-action"
-          >
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">AF443</h5>
-              <small>10:30, 26/11/2022</small>
-            </div>
-            <div class="d-flex w-100 justify-content-between">
-              <p class="mb-1">STATUS: embarcando</p>
-              <small class="text-muted">Clique para mais informações!</small>
-            </div>
-          </a>
-          <a
-            href="{% url 'flight' %}"
-            class="list-group-item list-group-item-action"
-          >
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">AF443</h5>
-              <small>10:30, 26/11/2022</small>
-            </div>
-            <div class="d-flex w-100 justify-content-between">
-              <p class="mb-1">STATUS: embarcando</p>
-              <small class="text-muted">Clique para mais informações!</small>
-            </div>
-          </a>
-          <a
-            href="{% url 'flight' %}"
-            class="list-group-item list-group-item-action"
-          >
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">AF443</h5>
-              <small>10:30, 26/11/2022</small>
-            </div>
-            <div class="d-flex w-100 justify-content-between">
-              <p class="mb-1">STATUS: embarcando</p>
-              <small class="text-muted">Clique para mais informações!</small>
-            </div>
-          </a>
+        <div class="list-group mh-100">
+          {% for flight in flightList %}
+            <a
+              href="{% url 'flight' flight.flightId %}"
+              class="list-group-item list-group-item-action"
+            >
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{flight.route.flightCode}}</h5>
+                <small>{{flight.route.scheduledTime}}, {{flight.scheduledDate}}</small>
+              </div>
+              <div>
+                <p>{{flight.route.departureAirport}} -> {{flight.route.arrivalAirport}} </p>
+              </div>
+              <div class="d-flex w-100 justify-content-between">
+                <p class="mb-1">STATUS: {% if flight.status %} {{ flight.status }} {% else %}  programado {% endif %}</p>
+                <small class="text-muted">Clique para mais informações!</small>
+              </div>
+            </a>
+          {% endfor %}
         </div>
       </div>
       <div class="row">

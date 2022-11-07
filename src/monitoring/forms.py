@@ -99,9 +99,10 @@ class FlightForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FlightForm, self).__init__(*args, **kwargs)
-        print(Route.objects.values("flightCode"))
         self.fields["route"] = forms.ModelChoiceField(
             queryset=Route.objects.all(),
             empty_label="",
             label="Código de voo",
         )
+
+        
