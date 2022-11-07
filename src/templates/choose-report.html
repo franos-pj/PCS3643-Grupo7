@@ -38,7 +38,7 @@
       src="https://kit.fontawesome.com/8e20749acf.js"
       crossorigin="anonymous"
     ></script>
-    <title>Report creation main screen</title>
+    <title>Relatórios</title>
   </head>
 
   <body>
@@ -60,16 +60,16 @@
             role="group"
             aria-label="Basic radio toggle button group"
           >
-            <a href="{% url 'generalReport' %}" class="btn btn-outline-primary">
+            <button id = "generateReportGeneral" class="btn btn-outline-primary">
               Gerar relatório geral
-            </a>
+            </button>
 
-            <a
-              href="{% url 'specificReport' %}"
+            <button
               class="btn btn-outline-primary"
+              id = "generateReportSpecific"
             >
               Gerar relatório específico
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -77,6 +77,29 @@
         <a href="{% url 'login' %}" class="btn btn-danger col-auto mt-5">
           Voltar à tela de login
         </a>
+      </div>
+      <div
+      class="modal fade"
+      id="searchModal"
+      tabindex="-1"
+      aria-labelledby="searchModalLabel"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-body  text-center">
+                <h4 class="modal-title text-danger" id="searchModalLabel">
+                </h4>
+              <button
+              type="button"
+              class="btn btn-primary mt-4"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              >
+              OK
+              </button>
+          </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -87,27 +110,61 @@
 
         function cb(start, end) {
           $('#reportrange span').html(
-            start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')
+            start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY')
           )
         }
 
         $('#reportrange').daterangepicker(
           {
+              locale: {
+              "format": "DD/MM/YYYY",
+              "separator": " - ",
+              "applyLabel": "Aplicar",
+              "cancelLabel": "Cancelar",
+              "fromLabel": "A partir de",
+              "toLabel": "Até",
+              "customRangeLabel": "Personalizado",
+              "weekLabel": "S",
+              "daysOfWeek": [
+                  "Do",
+                  "Seg",
+                  "Ter",
+                  "Qua",
+                  "Qui",
+                  "Sex",
+                  "Sáb"
+              ],
+              "monthNames": [
+                  "Janeiro",
+                  "Fevereiro",
+                  "Março",
+                  "Abril",
+                  "May",
+                  "Junho",
+                  "Julho",
+                  "Agosto",
+                  "Setembro",
+                  "Outubro",
+                  "Novembro",
+                  "Dezembro"
+              ],
+              "firstDay": 1
+          },
             startDate: start,
             endDate: end,
             ranges: {
-              Today: [moment(), moment()],
-              Yesterday: [
+              Hoje: [moment(), moment()],
+              Ontem: [
                 moment().subtract(1, 'days'),
                 moment().subtract(1, 'days'),
               ],
-              'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-              'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-              'This Month': [
+              'Últimos 7 dias': [moment().subtract(6, 'days'), moment()],
+              'Últimos 30 dias': [moment().subtract(29, 'days'), moment()],
+              'Neste Mês': [
                 moment().startOf('month'),
                 moment().endOf('month'),
               ],
-              'Last Month': [
+              'Último Mês': [
                 moment().subtract(1, 'month').startOf('month'),
                 moment().subtract(1, 'month').endOf('month'),
               ],
@@ -118,6 +175,82 @@
 
         cb(start, end)
       })
+
+      $(document).ready(function() {
+
+        function formatDateStr (date_str) {
+          date_obj = date_str.split('/')
+          return date_obj[2] + '-' + date_obj[1] + '-' + date_obj[0]
+        }
+
+        $("#generateReportSpecific").click(function() {
+          let date = $('#reportrange span').text()
+          console.log(date)
+          date = date.split(' - ')
+          start_date_str = date[0]
+          end_date_str = date[1]
+          start_date_str = formatDateStr(start_date_str)
+          end_date_str = formatDateStr(end_date_str)
+
+          $.ajax({
+            type:'POST',
+            dataType: 'json',
+            url:'{% url "chooseReport" %}',
+            data:
+            {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                start_date:start_date_str,
+                end_date:end_date_str,
+            },
+            success: function(response) {
+              console.log(response["success"])
+              if (response.success) {
+                redirectPath = "report/specific/" + start_date_str + "/" + end_date_str
+                window.location.href = redirectPath
+              }
+              else {
+                $("#searchModal").modal('show');
+                $('#searchModalLabel').text("Não há voos previstos para a data informada")
+                $('#searchModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
+              }
+            }
+        })
+      })
+
+      $("#generateReportGeneral").click(function() {
+        let date = $('#reportrange span').text()
+        console.log(date)
+        date = date.split(' - ')
+        start_date_str = date[0]
+        end_date_str = date[1]
+        start_date_str = formatDateStr(start_date_str)
+        end_date_str = formatDateStr(end_date_str)
+
+        $.ajax({
+          type:'POST',
+          dataType: 'json',
+          url:'{% url "chooseReport" %}',
+          data:
+          {
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              start_date:start_date_str,
+              end_date:end_date_str,
+          },
+          success: function(response) {
+            console.log(response["success"])
+            if (response.success) {
+              redirectPath = "report/general/" + start_date_str + "/" + end_date_str
+              window.location.href = redirectPath
+            }
+            else {
+              $("#searchModal").modal('show');
+              $('#searchModalLabel').text("Não há voos previstos para a data informada")
+              $('#searchModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
+            }
+          }
+        })
+      })
+    })
     </script>
   </body>
 </html>

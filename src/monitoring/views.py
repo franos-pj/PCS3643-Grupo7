@@ -1,33 +1,163 @@
-from traceback import print_tb
+from datetime import datetime, timedelta
 import json
 from django.shortcuts import HttpResponse, render, get_object_or_404
 from .forms import *
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count, F, Q, ExpressionWrapper, DurationField
 
+optionsStatusDepartureConst = {
+    "programado": ["embarcando","cancelado"],
+    "embarcando": ["pronto", "cancelado"],
+    "pronto": ["autorizado", "cancelado"],
+    "autorizado": ["em voo", "cancelado"],
+    "em voo": ["decolagem finalizada"],
+    "decolagem finalizada": [],
+    "cancelado": []
+}
+
+optionsStatusArrivalConst = {
+    "programado": ["cancelado", "em voo"],
+    "em voo": ["taxiando"],
+    "taxiando": ["pronto"],
+    "pronto": ["autorizado"],
+    "autorizado": ["aterrissado"],
+    "aterrissado": [],
+    "cancelado": []
+}
 
 def index(request):
     return render(request, "index.html")
 
 
 def dashboard(request):
-    return render(request, "Dashboard.html")
+    context = {}
+    flightList = Flight.objects.all().exclude(status='cancelado').exclude(status='aterrissado').exclude(status='decolagem finalizada').order_by('-scheduledDate')
+    context['flightList']=flightList
+    return render(request, "Dashboard.html", context)
 
 
-def flightInfo(request):
-    return render(request, "flight-info.html")
+def flightInfo(request, flightId):
+    context={}
+    flight = get_object_or_404(Flight, flightId=flightId)
+    flightCurrentStatus = flight.status
+    if (flightCurrentStatus is None):
+        flightCurrentStatus = 'programado'
+    if (flight.route.arrivalAirport == "FLL"):
+        optionStatus = optionsStatusArrivalConst[flightCurrentStatus]
+    else:
+        optionStatus = optionsStatusDepartureConst[flightCurrentStatus]
+    if request.method == "POST":
+        error = False
+        error_msg = '<p>Os seguintes campos não estão presentes</p>'
+        updateDate = request.POST
+        realTimeUpdate = updateDate['realTime']
+        realDateUpdate = updateDate['realDate']
+        statusUpdate = updateDate['status']
+        if (statusUpdate == 'decolagem finalizada' or statusUpdate=='aterrissado'):
+
+            if (len(realTimeUpdate) > 0):
+                realTimeUpdateObj = datetime.datetime.strptime(realTimeUpdate, '%H:%M').time()
+            else:
+                error = True
+                error_msg = error_msg + '<p>Horário Real</p>'
+            print(flight.realTime)
+            if (len(realDateUpdate) > 0):
+                realDateUpdateObj = datetime.datetime.strptime(realDateUpdate, '%Y-%m-%d').date()
+                if (flight.scheduledDate <  realDateUpdateObj):
+                    flight.realDate = realDateUpdateObj
+                    flight.realTime = realTimeUpdateObj
+                elif (flight.scheduledDate ==  realDateUpdateObj and realTimeUpdateObj >= flight.route.scheduledTime):
+                    flight.realDate = realDateUpdateObj
+                    flight.realTime = realTimeUpdateObj
+                else:
+                    error = True
+                    error_msg = '<p>Entrada inválida: Momento real deve ser posterior à previsão</p>'
+            else:
+                error = True
+                error_msg = error_msg + '<p>Data Real</p>'
+
+        if (statusUpdate != flightCurrentStatus):
+            flight.status = statusUpdate
+        else:
+            error = True
+            error_msg = '<p>Não houve atualização de status</p>'
+
+        if (not error):
+            response = {
+                'success': True,
+                'id': flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+                'error_msg': None
+            }
+            flight.save()
+        else:
+            response = {
+                'success': False,
+                'id': flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+                'error_msg': error_msg + '</li>'
+            }
+        print(error_msg)
+        return HttpResponse(json.dumps(response)) 
+    print(optionStatus)
+    context['flight'] = flight
+    context['optionStatus'] = optionStatus
+    context['flightCurrentStatus'] = flightCurrentStatus
+    return render(request, "flight-info.html", context)
 
 
 def chooseReport(request):
-    return render(request, "choose-report.html")
+    if request.method == "POST":
+        data = request.POST
+        start_date = data["start_date"]
+        end_date = data["end_date"]
+        start_date_obj = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date_obj = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+        queryset = Flight.objects.filter(scheduledDate__range=[start_date_obj,end_date_obj])
+        queryset = queryset.filter(status='aterrissado') | queryset.filter(status='cancelado').order_by('realDate')
+        print(list(queryset))
+        if queryset.exists():
+            response = {"success": True}
+            return HttpResponse(json.dumps(response))
+        else:
+            response = {"success": False}
+            return HttpResponse(json.dumps(response))
+    else:
+        return render(request, "choose-report.html")
 
 
-def generalReport(request):
-    return render(request, "general-report.html")
+def generalReport(request, startDate, endDate):
+    context={}
+    start_date_obj = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
+    end_date_obj = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
+    queryset_all = Flight.objects.filter(scheduledDate__range=[start_date_obj,end_date_obj])
+    print('1 ->', queryset_all.values())
+    print("")
+    queryset_all = queryset_all.filter(status='aterrissado') | queryset_all.filter(status='cancelado')
+    print('2 ->', queryset_all.values())
+    print("")
+    queryset_all = queryset_all.annotate(difDate=ExpressionWrapper(F('realDate') - F('scheduledDate'), output_field=DurationField()),
+                                         difTime=ExpressionWrapper(F('realTime') - F('route__scheduledTime'), output_field=DurationField())
+                                        )
+    print('3 ->', list(queryset_all.values()))
+    data = queryset_all.values('route__airline').annotate(
+        numFlights=Count('flightId'), 
+        numFlightsCancelled=Count('flightId', filter=Q(status='cancelado') ),
+        numFlightsDeparture=Count('flightId', filter=Q(route__departureAirport="FLL")),
+        numFlightsDelayed=Count('flightId', filter=(Q(difDate__gt=timedelta(seconds=0)) | Q(difTime__gt=timedelta(seconds=0))))
+    ).order_by('route__airline')
+    context['data'] = list(data)
+    print(list(data))
+    return render(request, "general-report.html", context)
 
-
-def specificReport(request):
-    return render(request, "specific-report.html")
+def specificReport(request, startDate, endDate):
+    context={}
+    start_date_obj = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
+    end_date_obj = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
+    queryset = Flight.objects.filter(scheduledDate__range=[start_date_obj,end_date_obj])
+    data = queryset.filter(status='aterrissado') | queryset.filter(status='cancelado').order_by('scheduledDate')
+    context['data'] = list(data)
+    print(list(queryset))
+    return render(request, "specific-report.html", context)
 
 
 def routesAndFlights(request):
@@ -40,10 +170,12 @@ def routesRecords(request):
         flightCode = data["flightCode"]
         if Route.objects.filter(flightCode=flightCode).exists():
             redirectPath = "routes-records/info/" + flightCode + "/"
-            response = {"success": True, "id": flightCode, "redirectPath": redirectPath}
+            response = {"success": True, "id": flightCode,
+                        "redirectPath": redirectPath}
             return HttpResponse(json.dumps(response))
         else:
-            response = {"success": False, "id": flightCode, "redirectPath": None}
+            response = {"success": False,
+                        "id": flightCode, "redirectPath": None}
             return HttpResponse(json.dumps(response))
     else:
         return render(request, "routes-records.html")

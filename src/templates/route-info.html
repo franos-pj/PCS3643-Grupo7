@@ -74,7 +74,7 @@
               <h2>Rota {{route.flightCode}}</h2>
               <hr />
               <p><b>Companhia:</b> {{route.airline}}</p>
-              <p><b>Aeroporto de Origem:</b> FLL</p>
+              <p><b>Aeroporto de Origem:</b> {{route.departureAirport}}</p>
               <p><b>Aeroporto de Destino:</b> {{route.arrivalAirport}}</p>
               <p><b>Hora Prevista:</b> {{route.scheduledTime}}</p>
             </div>
@@ -110,10 +110,6 @@
         </div>
         <div class="modal-body">
           <p>Você deseja mesmo atualizar as informações da rota?</p>
-          <small class="text-muted">
-            Esse modal corresponde à tela de Confirmação de Atualização de
-            Rota, no diagrama de telas exposto na documentação.
-          </small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
