@@ -1,3 +1,4 @@
+{% load myfilters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,6 +6,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
@@ -22,24 +26,26 @@
         <div class="row">
             <h2>Tela com as informações de voo</h2>
             <p>Permitirá vizualizar as informações</p>
-            <div class="mt-4">
-                <div class="col-md-6">
-                    <div class="h-100 p-5 bg-light rounded-3">
-                        <h2>Voo AF443</h2>
-                        <hr />
-                        <p><b>Hora:</b> 00:00</p>
-                        <p><b>Data:</b> 17/10/2022</p>
-                        <p><b>Status:</b> programado</p>
-                        <p><b>Data Prevista:</b> 17/10/2022</p>
+            <div id="infoFlightList">
+                <div class="mt-4">
+                    <div class="col-md-6">
+                        <div class="h-100 p-5 bg-light rounded-3">
+                            <h2>Voo {{flight.route}}</h2>
+                            <hr />
+                            <p><b>Data prevista:</b> {{flight.scheduledDate}}</p>
+                            <p><b>Data:</b> {{flight.realDate}}</p>
+                            <p><b>Hora:</b> {{flight.realTime}}</p>
+                            <p><b>Status:</b> {{flight.status}}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-auto mt-4">
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal">
-                    <i class="bi bi-trash-fill"></i>
-                    Excluir
-                </button>
+                <div class="col-auto mt-4">
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal">
+                        <i class="bi bi-trash-fill"></i>
+                        Excluir
+                    </button>
+                </div>
             </div>
             <div class="row">
                 <a href="{% url 'flightsRecords' %}" class="btn btn-danger col-auto mt-5">
@@ -61,8 +67,7 @@
                 <div class="modal-body">
                     <p>Você deseja mesmo excluir esse voo?</p>
                     <small class="text-muted">
-                        Esse modal corresponde à tela de Tela de Confirmação de Exclusão
-                        de Voo, no diagrama de telas exposto na documentação.
+                        Esse voo será excluído permanentemente.
                     </small>
                 </div>
                 <div class="modal-footer">
@@ -70,7 +75,7 @@
                         Não
                     </button>
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                        data-bs-target="#deleteConfirmedModal">
+                        data-bs-target="#deleteConfirmedModal" id="deleteSubmit">
                         <i class="bi bi-trash-fill"></i>
                         Excluir</button>
                 </div>
@@ -82,17 +87,45 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body  text-center">
-                    <h4 class="modal-title text-danger" id="deleteConfirmedModalLabel">
-                        Voo excluído
-                        <i class="bi bi-check2-circle"></i>
+                    <h4 class="modal-title" id="deleteConfirmedModalLabel">
                     </h4>
-                    <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close">
+                    <a href="{% url 'flightsRecords' %}" class=" btn btn-primary mt-4">
                         OK
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#deleteSubmit').click(function (event) {
+                console.log("deletar")
+                $.ajax({
+                    type: 'DELETE',
+                    url: '{% url "flightRecordInfo" route scheduledDate %}',
+                    dataType: 'json',
+                    data:
+                    {
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        console.log(response)
+                        if (response.success) {
+                            $('#deleteConfirmedModalLabel').text("Voo " + response.route + " (" + response.scheduledDate + ") excluído com sucesso ")
+                            $('#deleteConfirmedModalLabel').addClass("text-success")
+                            $('#deleteConfirmedModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
+                        }
+                        else {
+                            $('#checkIcon').hide()
+                            $('#deleteConfirmedModalLabel').text("Não foi possível excluir o voo " + response.route + " (" + response.scheduledDate + ") ")
+                            $('#deleteConfirmedModalLabel').addClass("text-danger")
+                            $('#deleteConfirmedModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
+                        }
+                    }
+                })
+            })
+        })
+    </script>
 </body>
 
 </html>

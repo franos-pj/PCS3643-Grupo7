@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group, Permission
 import django.contrib.auth.validators
 from monitoring.models import Route, Flight
 from django.contrib.contenttypes.models import ContentType
+from django.core.management import call_command
 
 
 def migrationScripts(apps, schema_editor):
@@ -136,3 +137,11 @@ def createUsers(apps, schema_editor):
     manager = User.objects.create_user(
         username=mockUsers[4]["username"], password=mockUsers[4]["password"])
     manager.groups.add(managerGroup)
+
+
+def loadInitialRoutes(apps, schema_editor):
+    call_command("loaddata", "routes.json")
+
+
+def loadInitialFlights(apps, schema_editor):
+    call_command("loaddata", "flights.json")
