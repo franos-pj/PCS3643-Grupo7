@@ -131,14 +131,14 @@ def flightInfo(request, flightId):
         if (not error):
             response = {
                 'success': True,
-                'id': flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+                'id': flight.route.flightCode + ' [' + str(flight.scheduledDate) + ']',
                 'error_msg': None
             }
             flight.save()
         else:
             response = {
                 'success': False,
-                'id': flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+                'id': flight.route.flightCode + ' [' + str(flight.scheduledDate) + ']',
                 'error_msg': error_msg + '</li>'
             }
         return HttpResponse(json.dumps(response))
@@ -333,16 +333,14 @@ def flightsRecords(request):
             )
             response = {
                 "success": True,
-                "route": route,
-                "scheduledDate": scheduledDate,
+                "id": route + ' [' + scheduledDate + ']',
                 "redirectPath": redirectPath,
             }
             return HttpResponse(json.dumps(response))
         else:
             response = {
                 "success": False,
-                "route": route,
-                "scheduledDate": scheduledDate,
+                "id": route + ' [' + scheduledDate + ']',
                 "redirectPath": None,
             }
             return HttpResponse(json.dumps(response))
@@ -391,8 +389,7 @@ def flightRegistration(request):
         # save the form data to model
         form.save()
         response = {
-            "route": form.data["route"],
-            "scheduledDate": form.data["scheduledDate"],
+            "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
             "success": True,
             "error": None,
         }
@@ -402,8 +399,7 @@ def flightRegistration(request):
     elif request.method == "POST":
         print("form invalid", form.data)
         response = {
-            "route": form.data["route"],
-            "scheduledDate": form.data["scheduledDate"],
+            "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
             "success": False,
             "error": form.errors.as_json(),
         }
