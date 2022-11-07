@@ -68,26 +68,10 @@ class FlightForm(forms.ModelForm):
         # specify fields to be used
         fields = ["route", "scheduledDate"]
 
-        # , "realDate", "realTime", "status"
-
         labels = {
             "route": "Código",
             "scheduledDate": "Data Prevista",
-            # "realDate": "Data",
-            # "realTime": "Hora",
-            # "status": "Status",
         }
-
-        # CHOICES = {
-        #     "1": "embarcando",
-        #     "2": "cancelado",
-        #     "3": "programado",
-        #     "4": "taxiando",
-        #     "5": "pronto",
-        #     "6": "autorizado",
-        #     "7": "em voo",
-        #     "8": "aterrissado",
-        # }
 
         widgets = {
             "route": forms.TextInput(
@@ -102,17 +86,6 @@ class FlightForm(forms.ModelForm):
                     "placeholder": "Selecione uma data",
                 },
             ),
-            # "realDate": forms.DateInput(
-            #     format=("%d-%m-%Y"),
-            #     attrs={
-            #         "type": "date",
-            #         "placeholder": "Selecione uma data",
-            #         "required": False,
-            #     },
-            #     # required=False,
-            # ),
-            # "realTime": forms.TimeInput(attrs={"type": "time", "required": False}),
-            # "status": forms.RadioSelect(attrs={"choices": CHOICES, "required": False}),
         }
 
     def __init__(self, *args, **kwargs):
