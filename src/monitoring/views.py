@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 statusDeparturePermissionTree = {
-    "Airlines": {"nao iniciado": ["embarcando", "cancelado"],
+    "Airlines": {"não iniciado": ["embarcando", "cancelado"],
                  "embarcando": ["programado", "cancelado"]},
     "Pilots": {"taxiando": ["pronto", "cancelado"],
                "autorizado": ["em voo", "cancelado"]},
@@ -23,7 +23,7 @@ statusDeparturePermissionTree = {
 }
 
 statusArrivalPermissionTree = {
-    "ControlTower": {"nao iniciado": ["em voo"],
+    "ControlTower": {"não iniciado": ["em voo"],
                      "em voo": ["aterrisado"]},
 }
 
@@ -79,18 +79,27 @@ def dashboard(request):
 @user_passes_test(lambda user: Group.objects.get(user=user).name
                   in ['Pilots', 'Airlines', 'ControlTower'])
 def flightInfo(request, flightId):
-
-    userGroup = Group.objects.get(user=request.user).name
-
     context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    timeInputDisabled = True
     flight = get_object_or_404(Flight, flightId=flightId)
     flightCurrentStatus = flight.status
     if (flightCurrentStatus is None):
-        flightCurrentStatus = 'nao iniciado'
-    if (flight.route.arrivalAirport == "FLL"):
-        optionStatus = statusArrivalPermissionTree[userGroup][flightCurrentStatus]
-    else:
-        optionStatus = statusDeparturePermissionTree[userGroup][flightCurrentStatus]
+        flightCurrentStatus = 'não iniciado'
+    try:
+        if (flight.route.arrivalAirport == "FLL"):
+            optionStatus = statusArrivalPermissionTree[userGroup][flightCurrentStatus]
+        else:
+            optionStatus = statusDeparturePermissionTree[userGroup][flightCurrentStatus]
+    except:
+        context['error'] = {
+            'code': '403',
+            'errorMsg': " Acesso ao voo bloqueado.",
+            'description': "Você não possui permissão para atualizar, no momento, o voo " + flight.route.flightCode + '[' + str(flight.scheduledDate) + ']',
+        }
+        return render(request, "error-page.html", context)
+    if (userGroup == 'ControlTower' and (flightCurrentStatus == 'em voo')):
+        timeInputDisabled = False
     if request.method == "POST":
         error = False
         error_msg = '<p>Os seguintes campos não estão presentes</p>'
@@ -145,6 +154,7 @@ def flightInfo(request, flightId):
     context['flight'] = flight
     context['optionStatus'] = optionStatus
     context['flightCurrentStatus'] = flightCurrentStatus
+    context['timeInputDisabled'] = timeInputDisabled
     return render(request, "flight-info.html", context)
 
 
@@ -183,7 +193,6 @@ def specificReport(request, startDate, endDate):
     data = queryset.filter(status='aterrissado') | queryset.filter(
         status='cancelado').order_by('scheduledDate')
     context['data'] = list(data)
-    print(list(queryset))
     return render(request, "specific-report.html", context)
 
 
@@ -195,17 +204,12 @@ def generalReport(request, startDate, endDate):
     end_date_obj = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
     queryset_all = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
-    print('1 ->', queryset_all.values())
-    print("")
     queryset_all = queryset_all.filter(
         status='aterrissado') | queryset_all.filter(status='cancelado')
-    print('2 ->', queryset_all.values())
-    print("")
     queryset_all = queryset_all.annotate(difDate=ExpressionWrapper(F('realDate') - F('scheduledDate'), output_field=DurationField()),
                                          difTime=ExpressionWrapper(
                                              F('realTime') - F('route__scheduledTime'), output_field=DurationField())
                                          )
-    print('3 ->', list(queryset_all.values()))
     data = queryset_all.values('route__airline').annotate(
         numFlights=Count('flightId'),
         numFlightsCancelled=Count('flightId', filter=Q(status='cancelado')),
@@ -215,7 +219,6 @@ def generalReport(request, startDate, endDate):
             Q(difDate__gt=timedelta(seconds=0)) | Q(difTime__gt=timedelta(seconds=0))))
     ).order_by('route__airline')
     context['data'] = list(data)
-    print(list(data))
     return render(request, "general-report.html", context)
 
 
@@ -249,7 +252,6 @@ def routesRecords(request):
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Operators')
 def routeInfo(request, flightCode):
     context = {}
-    print(request)
     route = get_object_or_404(Route, pk=flightCode)
     form = RouteForm(request.POST or None, instance=route)
 
@@ -272,7 +274,6 @@ def routeInfo(request, flightCode):
 
     elif request.method == "DELETE":
         deletion = route.delete()
-        print(deletion)
         response = {"id": flightCode, "success": True}
         return HttpResponse(json.dumps(response))
 
@@ -384,8 +385,6 @@ def flightRegistration(request):
     # create object of form
     form = FlightForm(request.POST or None, request.FILES or None)
 
-    print(form)
-
     # check if form data is valid
     if form.is_valid():
         # save the form data to model
@@ -396,18 +395,14 @@ def flightRegistration(request):
             "success": True,
             "error": None,
         }
-        print("form valid")
-        print("myresponse", response)
         return HttpResponse(json.dumps(response))
     elif request.method == "POST":
-        print("form invalid", form.data)
         response = {
             "route": form.data["route"],
             "scheduledDate": form.data["scheduledDate"],
             "success": False,
             "error": form.errors.as_json(),
         }
-        print("myresponse", response)
         return HttpResponse(json.dumps(response))
 
     context["form"] = form
