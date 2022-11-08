@@ -72,19 +72,17 @@ python manage.py test
 python manage.py runserver
 ```
 
-8. Abra seu navegador a url `http://127.0.0.1:8000` e abra uma das seguintes abas:
+8. Abra seu navegador a url `http://127.0.0.1:8000`. Uma tela de login será apresentada.
 
-- `http://127.0.0.1:8000` - Tela de Autenticação
-- `http://127.0.0.1:8000/routes-and-flights` - Tela do Operador de Voo
-- `http://127.0.0.1:8000/routes-and-flights/routes-records` - Tela de Rotas
-- `http://127.0.0.1:8000/routes-and-flights/routes-records/info` - Tela de Visualização de Rota
-- `http://127.0.0.1:8000/routes-and-flights/routes-records/register` - Tela de Cadastro de Rota
-- `http://127.0.0.1:8000/routes-and-flights/flights-records` - Tela de Voos
-- `http://127.0.0.1:8000/routes-and-flights/flights-records/flights-record-info` - Tela de Visualização de Voo
-- `http://127.0.0.1:8000/routes-and-flights/flights-records/register` - Tela de Cadastro de Voo
-- `http://127.0.0.1:8000/monitoring/dashboard` - Tela do Painel de Monitoramento de Voos
-- `http://127.0.0.1:8000/monitoring/flight-info` - Tela de Atualização de Voo
-- `http://127.0.0.1:8000/report` - Tela de Geração de Relatório
-- `http://127.0.0.1:8000/report/general` - Tela de Visualização de Relatório Geral
-- `http://127.0.0.1:8000/report/specific` - Tela de Visualização de Relatório Específico
+Por default, os seguintes usuários, representados pelos pares `(username, senha)`, existem ao inicio da aplicação:
+
+- `(francisco.mariani, SR71)`: usuário do tipo Piloto
+- `(lucas.garcia, B52)`: usuário do tipo Companhia Aérea
+- `(lucas.palmiro, A380)`: usuário do tipo Torre de Controle
+- `(michelet.chavez, PCS3643)`: usuário do tipo Operador de Voo
+- `(kechi.hirama, PCS3643)`: usuário do tipo Gerente de Operações
+
+O login do usuário determina as permissões de navegação dele na aplicação. Isto é, segundo o [Diagramas de Navegação de Telas](./docs/navegacao_telas.md), um usuário do tipo Piloto apenas será capaz de acessar as telas destinadas a ele, por exemplo.
+
+Os testes usados para validar o funcionamento das unidades da aplicação podem ser vistos em [Plano de Testes de Unidade](./docs/plano_de_testes_unidade.pdf).
 
