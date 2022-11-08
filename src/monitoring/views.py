@@ -49,7 +49,7 @@ def index(request):
 
         else:
             context = {
-                'success': False,
+                'failure': True,
                 'loginForm': loginForm,
             }
 
@@ -57,7 +57,7 @@ def index(request):
         logout(request)
 
         context = {
-            'success': None,
+            'failure': None,
             'loginForm': loginForm,
         }
 
