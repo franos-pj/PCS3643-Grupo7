@@ -16,6 +16,8 @@ O plano de testes de validação elaborado para o projeto é apresentado em [Pla
 
 Os diagramas de navegação de telas podem ser visualizados em [Diagramas de Navegação de Telas](./docs/navegacao_telas.md).
 
+**O Plano de Testes de Unidade elaborado pode ser visto em [Plano de Testes de Unidade](./docs/plano_de_testes_unidade.pdf).**
+
 ## Guia de Instalação
 
 Para executar este projeto em seu computador:

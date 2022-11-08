@@ -107,7 +107,7 @@ def flightInfo(request, flightId):
         realTimeUpdate = updateDate['realTime']
         realDateUpdate = updateDate['realDate']
         statusUpdate = updateDate['status']
-        if (statusUpdate == 'decolagem finalizada' or statusUpdate == 'aterrissado'):
+        if (statusUpdate in ['decolagem finalizada', 'aterrissado']):
 
             if (len(realTimeUpdate) > 0):
                 realTimeUpdateObj = datetime.datetime.strptime(
