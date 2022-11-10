@@ -170,6 +170,7 @@
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#updateConfirmedModal"
+              id="updateButtonFormConfirm"
             >
               Sim, atualizar!
             </button>
@@ -288,7 +289,7 @@
 
         $('#id_flightCode').prop('disabled', true)
 
-        $('#updateButtonForm').click(function () {
+        $('#updateButtonFormConfirm').click(function () {
           $('#routeUpdateForm').submit()
         })
 

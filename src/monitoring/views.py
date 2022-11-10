@@ -356,9 +356,54 @@ def flightRecordInfo(request, route, scheduledDate):
     context = {}
     flight = get_object_or_404(
         Flight, route=route, scheduledDate=scheduledDate)
+    
+    flightCurrentStatus = flight.status
+    scheduledDateDisabled = True
+    if (flightCurrentStatus is None):
+        scheduledDateDisabled = False
+    
     form = FlightForm(request.POST or None, instance=flight)
+    if request.method == "POST":
+        
+        if form.is_valid():
+            data = request.POST
+            route = data["route"]
+            scheduledDate = data["scheduledDate"]
+            if (Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists()):
+                response = {
+                    "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
+                    "success": False,
+                    "error_msg": "Voo informado já existe"
+                }
+                return HttpResponse(json.dumps(response))
+            else:
+                form.save()
+                data = request.POST
+                redirectPath = (
+                    "/routes-and-flights/flights-records/flights-record-info/"
+                    + route
+                    + "/"
+                    + data["scheduledDate"]
+                    + "/"
+                )
+                print(redirectPath)
+                response = {
+                    "id": route + ' [' + scheduledDate + ']',
+                    "redirectPath": redirectPath,
+                    "success": True,
+                    "error": None,
+                }
+                return HttpResponse(json.dumps(response))
+        else:
+            response = {
+                "id": route + ' [' + scheduledDate + ']',
+                "success": False,
+                "error": form.errors.as_json(),
+                "error_msg": ""
+            }
+            return HttpResponse(json.dumps(response))
 
-    if request.method == "DELETE":
+    elif request.method == "DELETE":
         deletion = flight.delete()
         response = {
             "route": route,
@@ -367,6 +412,7 @@ def flightRecordInfo(request, route, scheduledDate):
         }
         return HttpResponse(json.dumps(response))
 
+    context["scheduledDateDisabled"] = scheduledDateDisabled
     context["flight"] = flight
     context["route"] = route
     context["scheduledDate"] = scheduledDate
@@ -386,18 +432,29 @@ def flightRegistration(request):
     # check if form data is valid
     if form.is_valid():
         # save the form data to model
-        form.save()
-        response = {
-            "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
-            "success": True,
-            "error": None,
-        }
+        data = request.POST
+        route = data["route"]
+        scheduledDate = data["scheduledDate"]
+        if (Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists()):
+            response = {
+                "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
+                "success": False,
+                "error_msg": "Voo informado já existe"
+            }
+        else:
+            form.save()
+            response = {
+                "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
+                "success": True,
+                "error": None,
+            }
         return HttpResponse(json.dumps(response))
     elif request.method == "POST":
         response = {
             "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
             "success": False,
             "error": form.errors.as_json(),
+            "error_msg": ""
         }
         return HttpResponse(json.dumps(response))
 
