@@ -225,38 +225,39 @@
           $('#routeRegistrationForm').submit()
         })
         
-      $("#okButton").click(function () {
-        window.location.reload();
-      })
+        $("#okButton").click(function () {
+          window.location.reload();
+        })
 
-      $(document).on('submit', "#routeRegistrationForm", function (event) {
-        event.preventDefault();
-        $.ajax({
-          type: 'POST',
-          url: '{% url "routeRegistration" %}',
-          dataType: 'json',
-          data:
-          {
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            flightCode: $("#id_flightCode").val(),
-            airline: $("#id_airline").val(),
-            departureAirport: $("#id_departureAirport").val(),
-            arrivalAirport: $("#id_arrivalAirport").val(),
-            scheduledTime: $("#id_scheduledTime").val(),
-          },
-          success: function (response) {
-            if (response.success) {
-              $('#registerSucessFailureModalLabel').text("Rota " + response.id + " cadastrada com sucesso ")
-              $('#registerSucessFailureModalLabel').removeClass("text-danger")
-              $('#registerSucessFailureModalLabel').addClass("text-success")
-              $('#registerSucessFailureModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
+        $(document).on('submit', "#routeRegistrationForm", function (event) {
+          event.preventDefault();
+          $.ajax({
+            type: 'POST',
+            url: '{% url "routeRegistration" %}',
+            dataType: 'json',
+            data:
+            {
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              flightCode: $("#id_flightCode").val(),
+              airline: $("#id_airline").val(),
+              departureAirport: $("#id_departureAirport").val(),
+              arrivalAirport: $("#id_arrivalAirport").val(),
+              scheduledTime: $("#id_scheduledTime").val(),
+            },
+            success: function (response) {
+              if (response.success) {
+                $('#registerSucessFailureModalLabel').text("Rota " + response.id + " cadastrada com sucesso ")
+                $('#registerSucessFailureModalLabel').removeClass("text-danger")
+                $('#registerSucessFailureModalLabel').addClass("text-success")
+                $('#registerSucessFailureModalLabel').append('<i class="bi bi-check2-circle" id="checkIcon"></i>')
+              }
+              else {
+                $('#checkIcon').hide()
+                $('#registerSucessFailureModalLabel').text("Não foi possível cadastrar a rota " + response.id + " ")
+                $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
+              }
             }
-            else {
-              $('#checkIcon').hide()
-              $('#registerSucessFailureModalLabel').text("Não possível cadastrar a rota " + response.id + " ")
-              $('#registerSucessFailureModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
-            }
-          }
+          })
         })
       })
     </script>

@@ -106,5 +106,50 @@
       "route": "UA679",
       "scheduledDate": "2022-12-06"
     }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 12,
+    "fields": {
+      "route": "AF679",
+      "scheduledDate": "2022-11-08",
+      "status": "embarcando"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 13,
+    "fields": {
+      "route": "LH679",
+      "scheduledDate": "2022-11-08",
+      "status": "taxiando"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 14,
+    "fields": {
+      "route": "AA122",
+      "scheduledDate": "2022-11-08",
+      "status": "autorizado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 15,
+    "fields": {
+      "route": "TP084",
+      "scheduledDate": "2022-11-09",
+      "status": "programado"
+    }
+  },
+  {
+    "model": "monitoring.Flight",
+    "pk": 16,
+    "fields": {
+      "route": "BA246",
+      "scheduledDate": "2022-11-08",
+      "status": "em voo"
+    }
   }
 ]
