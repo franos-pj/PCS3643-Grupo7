@@ -16,7 +16,7 @@ class UserLoginForm(forms.ModelForm):
 
         widgets = {
             'username': forms.TextInput(attrs={'placeholder': 'Digite o nome do usuário'}),
-            'password': forms.TextInput(attrs={'placeholder': 'Digite sua senha'}),
+            'password': forms.PasswordInput(attrs={'placeholder': 'Digite sua senha'}),
         }
 
 
