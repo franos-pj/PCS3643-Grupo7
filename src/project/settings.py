@@ -145,3 +145,4 @@ STATICFILES_DIRS = [
 AXES_COOLOFF_TIME = 0.05        # cooloff in 3 minutes
 AXES_ONLY_USER_FAILURES = True  # lockout based on user, not IP
 AXES_RESET_ON_SUCCESS = True    # reset unsuccesful tries after login
+AXES_LOCKOUT_TEMPLATE = 'login-lockout.html'
