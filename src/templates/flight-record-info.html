@@ -26,6 +26,48 @@
         <div class="row">
             <h2>Tela com as informações de voo</h2>
             <p>Permitirá vizualizar as informações</p>
+            <div class="mt-4" id="flightUpdateFormDiv">
+                <div class="col-md-6">
+                  <div class="h-100 p-5 bg-light rounded-3">
+                    <form method="POST" enctype="multipart/form-data" id="flightUpdateForm">
+                      <!-- Security token -->
+                      {% csrf_token %}
+                      <div class="form-group  mt-2">
+                        <label for="route">Voo:</label>
+                        <input type="text" value="{{flight.route}}" class="form-control" id="route" aria-describedby="routeHelp" disabled>
+                        <small id="code-help" class="form-text text-muted">O código de voo não pode ser alterado</small>
+                      </div>
+                      {% if scheduledDateDisabled %}
+                      <div class="form-group  mt-2">
+                        <label for="route">Data prevista:</label>
+                        <input type="text" value="{{flight.scheduledDate}}" class="form-control" id="id_scheduledDate" aria-describedby="scheduledDateHelp" disabled>
+                        <small id="code-help" class="form-text text-muted">A data prevista não pode ser alterada</small>
+                      </div>
+                      {% else %}
+                      <div class="form-group  mt-2">
+                        {{ form.scheduledDate.label_tag }}
+                        {{form.scheduledDate|addclass:'form-control'}}
+                      </div>
+                      {% endif %}
+                    </form>
+                    <div class="col-auto mt-4">
+                      {% if scheduledDateDisabled %}
+                      <div>
+                      </div>
+                      {% else %}
+                      <button type="button" id="updateButtonForm" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateModal">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Atualizar
+                      </button>
+                      {% endif %}
+                      <button type="button" class="btn btn-secondary" id="cancelUpdateMode">
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+            </div>
             <div id="infoFlightList">
                 <div class="mt-4">
                     <div class="col-md-6">
@@ -35,11 +77,16 @@
                             <p><b>Data prevista:</b> {{flight.scheduledDate}}</p>
                             <p><b>Data:</b> {{flight.realDate}}</p>
                             <p><b>Hora:</b> {{flight.realTime}}</p>
-                            <p><b>Status:</b> {{flight.status}}</p>
+                            <p><b>Status:</b> {% if flight.status %} {{ flight.status }} {% else %}
+                                não iniciado {% endif %}</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-auto mt-4">
+                    <button id="updateButtonMode" type="button" class="btn btn-primary">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Atualizar
+                    </button>
                     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
                         data-bs-target="#deleteModal">
                         <i class="bi bi-trash-fill"></i>
@@ -52,6 +99,29 @@
                     Voltar a Registros de Voos
                 </a>
             </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="updateModalLabel">
+                Confirme atualização
+              </h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Você deseja mesmo atualizar a data prevista do voo?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">
+                Não
+              </button>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#updateConfirmedModal" id="updateButtonFormConfirm">Sim, atualizar!</button>
+            </div>
+          </div>
         </div>
     </div>
 
@@ -82,12 +152,27 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="updateConfirmedModal" tabindex="-1" aria-labelledby="updateConfirmedModalLabel"
+    aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body  text-center">
+            <h4 class="modal-title text-success" id="updateConfirmedModalLabel">
+                <i class="bi bi-check2-circle"></i>
+            </h4>
+            <button type="button" class="btn btn-primary mt-4" data-bs-dismiss="modal" aria-label="Close" id="okButton">
+                OK
+            </button>
+            </div>
+        </div>
+      </div>
+    </div>
     <div class="modal fade" id="deleteConfirmedModal" tabindex="-1" aria-labelledby="deleteConfirmedModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered col-8">
             <div class="modal-content">
                 <div class="modal-body  text-center">
-                    <h4 class="modal-title" id="deleteConfirmedModalLabel">
+                    <h4 class="modal-title" id="deleteConfirmedModalLabel" style="width:200px">
                     </h4>
                     <a href="{% url 'flightsRecords' %}" class=" btn btn-primary mt-4">
                         OK
@@ -98,8 +183,73 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#flightUpdateFormDiv').hide()
+
+            $('#updateButtonMode').click(function () {
+                $('#flightUpdateFormDiv').show()
+                $('#infoFlightList').hide()
+            })
+
+            $('#cancelUpdateMode').click(function () {
+                $('#flightUpdateFormDiv').hide()
+                $('#infoFlightList').show()
+            })
+
+            $('#updateButtonFormConfirm').click(function () {
+                $('#flightUpdateForm').submit()
+            })
+
+            $(document).on('submit', '#flightUpdateForm', function (event) {
+                event.preventDefault()
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "flightRecordInfo" route scheduledDate %}',
+                    dataType: 'json',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        route: '{{ flight.route }}',
+                        scheduledDate: $('#id_scheduledDate').val(),
+                    },
+                    success: function (response) {
+                    if (response.success) {
+                        $('#updateConfirmedModalLabel').text(
+                        'Voo ' + response.id + ' atualizado com sucesso '
+                        )
+                        $('#updateConfirmedModalLabel').removeClass('text-danger')
+                        $('#updateConfirmedModalLabel').addClass('text-success')
+                        $('#updateConfirmedModalLabel').append(
+                        '<i class="bi bi-check2-circle" id="checkIcon"></i>'
+                        )
+
+                        $('#okButton').click(function () {
+                            $('#flightUpdateFormDiv').hide()
+                            $('#infoFlightList').show()
+                            window.location = response.redirectPath
+                        })
+                    } else {
+                        console.log(response)
+                        $('#checkIcon').hide()
+                        $('#updateConfirmedModalLabel').text(
+                        'Não possível atualizar o voo ' + response.id + ' '
+                        )
+                        $("#modalMsg").text(response.error_msg)
+                        $('#updateConfirmedModalLabel').removeClass('text-success')
+                        $('#updateConfirmedModalLabel').addClass('text-danger')
+                        $('#updateConfirmedModalLabel').append(
+                        '<p id="modalMsg">'+response.error_msg+'</p><i class="bi bi-emoji-frown" id = "failureIcon"></i>'
+                        )
+                        $('#okButton').click(function () {
+                            $('#flightUpdateFormDiv').hide()
+                            $('#infoFlightList').show()
+                            window.location.reload()
+                        })
+                    }
+                    },
+                })
+            })
+
             $('#deleteSubmit').click(function (event) {
-                console.log("deletar")
+                
                 $.ajax({
                     type: 'DELETE',
                     url: '{% url "flightRecordInfo" route scheduledDate %}',
