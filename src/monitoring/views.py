@@ -25,7 +25,7 @@ statusDeparturePermissionTree = {
 
 statusArrivalPermissionTree = {
     "ControlTower": {"previsto": ["em voo"],
-                     "em voo": ["aterrisado"]},
+                     "em voo": ["aterrissado"]},
 }
 
 def index(request):
