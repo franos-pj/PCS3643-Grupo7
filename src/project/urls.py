@@ -20,7 +20,8 @@ from monitoring import views
 urlpatterns = [
     # Disabled admin site for the purpose of evaluation
     # path('admin/', admin.site.urls),
-    path('', views.index, name='login'),
+    path('', views.index, name='display'),
+    path('login', views.signIn, name='login'),
     path('monitoring/dashboard', views.dashboard, name='dashboard'),
     path('monitoring/flight-info/<int:flightId>', views.flightInfo, name='flight'),
     path('report', views.chooseReport, name='chooseReport'),
