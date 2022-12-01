@@ -206,7 +206,7 @@ def chooseReport(request):
         queryset = Flight.objects.filter(
             scheduledDate__range=[start_date_obj, end_date_obj])
         queryset = queryset.filter(status='aterrissado') | queryset.filter(
-            status='cancelado').order_by('realDate')
+            status='cancelado') | queryset.filter(status='decolagem finalizada').order_by('realDate')
         if queryset.exists():
             response = {"success": True}
             return HttpResponse(json.dumps(response))
@@ -226,7 +226,7 @@ def specificReport(request, startDate, endDate):
     queryset = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
     data = queryset.filter(status='aterrissado') | queryset.filter(
-        status='cancelado').order_by('scheduledDate')
+        status='cancelado') | queryset.filter(status='decolagem finalizada').order_by('scheduledDate')
     context['data'] = list(data)
     return render(request, "specific-report.html", context)
 
@@ -329,11 +329,19 @@ def routeRegistration(request):
     # check if form data is valid
     if form.is_valid():
         # save the form data to model
-        form.save()
-        response = {
-            "id": form.cleaned_data["flightCode"],
-            "success": True,
-            "error": None,
+        if (form.data["departureAirport"] != form.data["arrivalAirport"] 
+            and (form.data["departureAirport"] == "FLL" or form.data["arrivalAirport"] == "FLL")):
+            form.save()
+            response = {
+                "id": form.cleaned_data["flightCode"],
+                "success": True,
+                "error": None,
+            }
+        else:
+            response = {
+            "id": form.data["flightCode"],
+            "success": False,
+            "error": "Combinação de aeroporto inválida",
         }
 
         return HttpResponse(json.dumps(response))
