@@ -5,7 +5,7 @@
     "fields": {
       "flightCode": "UA679",
       "airline": "United Airlines",
-      "departureAirport": "KORD",
+      "departureAirport": "ORD",
       "arrivalAirport": "FLL",
       "scheduledTime": "10:30"
     }
@@ -193,7 +193,7 @@
       "flightCode": "UA678",
       "airline": "United Airlines",
       "departureAirport": "FLL",
-      "arrivalAirport": "KORD",
+      "arrivalAirport": "ORD",
       "scheduledTime": "23:30"
     }
   },
@@ -204,7 +204,7 @@
       "flightCode": "UA679",
       "airline": "United Airlines",
       "departureAirport": "FLL",
-      "arrivalAirport": "KORD",
+      "arrivalAirport": "ORD",
       "scheduledTime": "11:30"
     }
   },

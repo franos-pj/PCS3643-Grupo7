@@ -103,6 +103,7 @@
               <tr class="text-light bg-primary">
                 <th scope="col">Companhia Aérea</th>
                 <th scope="col">Código de Voo</th>
+                <th scope="col">Status</th>
                 <th scope="col">Origem</th>
                 <th scope="col">Chegada Prevista</th>
                 <th scope="col">Chegada Real</th>
@@ -113,6 +114,13 @@
               <tr>
                 <td>{{flight.route.airline}}</td>
                 <td>{{flight.route.flightCode}}</td>
+                <td>
+                  {% if flight.status %} 
+                    {{ flight.status }}
+                  {% else %} 
+                  previsto 
+                  {% endif %}
+                </td>
                 <td>{{flight.route.departureAirport}}</td>
                 <td>{{flight.route.scheduledTime}}</td>
                 <td>
