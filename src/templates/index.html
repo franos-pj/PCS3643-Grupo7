@@ -1,45 +1,142 @@
-{% load myfilters %}
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .icon {
+        transform: rotate(90deg);
+      }
+    </style>
+    <title>Flight display</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <!-- CSS only -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
-  <!-- JavaScript Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-    crossorigin="anonymous"></script>
-  <title>Main screen</title>
-</head>
+  <body>
+    <div class="container mt-4">
+      <div>
+        <h2>Painel de exibição de voos</h2>
 
-<body>
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-6">
-        <h2>Autenticação</h2>
-        <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="form-group  mt-2">
-            {{ loginForm.username.label_tag }}
-            {{ loginForm.username|addclass:'form-control'}}
-          </div>
-          <div class="form-group  mt-2">
-            {{ loginForm.password.label_tag }}
-            {{ loginForm.password|addclass:'form-control'}}
-          </div>
-          {% if failure == True %}
-          <h5 class="mt-4 text-danger">Usuário ou senha incorretos!</h5>
-          {% endif %}
-          <button type="submit" class="btn btn-primary mt-4">Fazer login</button>
-        </form>
+        <div>
+          <table class="table table-bordered">
+            <thead>
+              <tr class="text-light bg-primary">
+                <th colspan='2' class="text-center">Aeroporto Internacional FLL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Data: {{currentDate}}</td>
+                <td>Hora: {{currentTime}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {% if flightListDeparture.count > 0 %}
+        <p>Lista de todos os voos partindo do Aeroporto Internacional FLL. </p>
+        <div>
+          <table class="table table-bordered">
+            <thead>
+              <tr class="text-light bg-primary">
+                <th scope="col">Companhia Aérea</th>
+                <th scope="col">Código de Voo</th>
+                <th scope="col">Status</th>
+                <th scope="col">Destino</th>
+                <th scope="col">Partida Prevista</th>
+                <th scope="col">Partida Real</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for flight in flightListDeparture %}
+              <tr>
+                <td>{{flight.route.airline}}</td>
+                <td>{{flight.route.flightCode}}</td>
+                <td>
+                  {% if flight.status %} 
+                    {% if flight.status == 'programado' or flight.status == 'taxiando' or flight.status == 'pronto' or flight.status == 'autorizado' %}
+                    embarque finalizado
+                    {% else %} 
+                    {{ flight.status }}
+                    {% endif %}
+                  {% else %} 
+                  previsto 
+                  {% endif %}
+                </td>
+                <td>{{flight.route.arrivalAirport}}</td>
+                <td>{{flight.route.scheduledTime}}</td>
+                <td>
+                  {% if flight.realTime %} 
+                  {{ flight.realTime }} 
+                  {% else %} 
+                  -- 
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p>Não há voos partindo a serem exibidos no momento</p>
+        {% endif %}
+
+        {% if flightListArrival.count > 0 %}
+        <p>Lista de todos os voos chegando ao Aeroporto Internacional FLL. </p>
+        <div>
+          <table class="table table-bordered">
+            <thead>
+              <tr class="text-light bg-primary">
+                <th scope="col">Companhia Aérea</th>
+                <th scope="col">Código de Voo</th>
+                <th scope="col">Origem</th>
+                <th scope="col">Chegada Prevista</th>
+                <th scope="col">Chegada Real</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for flight in flightListArrival %}
+              <tr>
+                <td>{{flight.route.airline}}</td>
+                <td>{{flight.route.flightCode}}</td>
+                <td>{{flight.route.departureAirport}}</td>
+                <td>{{flight.route.scheduledTime}}</td>
+                <td>
+                  {% if flight.realTime %} 
+                  {{ flight.realTime }} 
+                  {% else %} 
+                  -- 
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p>Não há voos chegando a serem exibidos no momento</p>
+        {% endif %}
+
+        <div>
+          <a href="{% url 'login' %}" class="btn btn-primary col-auto mt-5">
+            Login
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-  </div>
-</body>
-
+  </body>
 </html>
