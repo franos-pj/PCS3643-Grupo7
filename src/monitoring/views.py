@@ -292,12 +292,20 @@ def routeInfo(request, flightCode):
 
     if request.method == "POST":
         if form.is_valid():
-            form.save()
-            response = {
-                "id": form.cleaned_data["flightCode"],
-                "success": True,
-                "error": None,
-            }
+            if (form.data["departureAirport"] != form.data["arrivalAirport"] 
+            and (form.data["departureAirport"] == "FLL" or form.data["arrivalAirport"] == "FLL")):
+                form.save()
+                response = {
+                    "id": form.cleaned_data["flightCode"],
+                    "success": True,
+                    "error": None,
+                }
+            else:
+                response = {
+                "id": form.data["flightCode"],
+                "success": False,
+                "error": "Combinação de aeroporto inválida",
+                }
             return HttpResponse(json.dumps(response))
         else:
             response = {
