@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
-from datetime import datetime, timedelta
 import json
 from django.shortcuts import HttpResponse, render, get_object_or_404
 from .forms import *
@@ -12,8 +11,10 @@ from django.db.models import Count, F, Q, ExpressionWrapper, DurationField
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from datetime import date, datetime, timedelta
+
 statusDeparturePermissionTree = {
-    "Airlines": {"não iniciado": ["embarcando", "cancelado"],
+    "Airlines": {"previsto": ["embarcando", "cancelado"],
                  "embarcando": ["programado", "cancelado"]},
     "Pilots": {"taxiando": ["pronto", "cancelado"],
                "autorizado": ["em voo", "cancelado"]},
@@ -23,12 +24,45 @@ statusDeparturePermissionTree = {
 }
 
 statusArrivalPermissionTree = {
-    "ControlTower": {"não iniciado": ["em voo"],
-                     "em voo": ["aterrisado"]},
+    "ControlTower": {"previsto": ["em voo"],
+                     "em voo": ["aterrissado"]},
 }
 
-
 def index(request):
+    currentDate = date.today()
+    currentTime = datetime.now().time()
+    tomorrow = currentDate + timedelta(1)
+
+    context = {}
+
+    flightListAll = Flight.objects.all().filter(scheduledDate__gte=currentDate, scheduledDate__lte=tomorrow)
+
+    flightListArrivalAll = flightListAll.filter(route__arrivalAirport='FLL')
+    flightListDepartureAll = flightListAll.filter(route__departureAirport='FLL')
+
+    flightListArrival = (
+        flightListArrivalAll.exclude(status=None)
+    ).order_by('-scheduledDate').order_by('-route__scheduledTime')
+
+    flightListDeparture = (
+        flightListDepartureAll.filter(status=None) | 
+        flightListDepartureAll.filter(status='embarcando') | 
+        flightListDepartureAll.filter(status='cancelado') |
+        flightListDepartureAll.filter(status='programado') |
+        flightListDepartureAll.filter(status='taxiando') |
+        flightListDepartureAll.filter(status='pronto') |
+        flightListDepartureAll.filter(status='autorizado') |
+        flightListDepartureAll.filter(status='decolagem finalizada') 
+    ).order_by('-scheduledDate').order_by('-route__scheduledTime')
+
+    context['currentDate'] = currentDate
+    context['currentTime'] = currentTime
+    context['flightListArrival'] = flightListArrival
+    context['flightListDeparture'] = flightListDeparture
+
+    return render(request, "index.html", context=context)
+
+def signIn(request):
 
     loginForm = UserLoginForm(request.POST or None, request.FILES or None)
 
@@ -62,7 +96,7 @@ def index(request):
             'loginForm': loginForm,
         }
 
-    return render(request, "index.html", context=context)
+    return render(request, "sign-in.html", context=context)
 
 
 @login_required
@@ -86,7 +120,7 @@ def flightInfo(request, flightId):
     flight = get_object_or_404(Flight, flightId=flightId)
     flightCurrentStatus = flight.status
     if (flightCurrentStatus is None):
-        flightCurrentStatus = 'não iniciado'
+        flightCurrentStatus = 'previsto'
     try:
         if (flight.route.arrivalAirport == "FLL"):
             optionStatus = statusArrivalPermissionTree[userGroup][flightCurrentStatus]
@@ -111,13 +145,13 @@ def flightInfo(request, flightId):
         if (statusUpdate in ['decolagem finalizada', 'aterrissado']):
 
             if (len(realTimeUpdate) > 0):
-                realTimeUpdateObj = datetime.datetime.strptime(
+                realTimeUpdateObj = datetime.strptime(
                     realTimeUpdate, '%H:%M').time()
             else:
                 error = True
                 error_msg = error_msg + '<p>Horário Real</p>'
             if (len(realDateUpdate) > 0):
-                realDateUpdateObj = datetime.datetime.strptime(
+                realDateUpdateObj = datetime.strptime(
                     realDateUpdate, '%Y-%m-%d').date()
                 if (flight.scheduledDate < realDateUpdateObj):
                     flight.realDate = realDateUpdateObj
@@ -166,9 +200,9 @@ def chooseReport(request):
         data = request.POST
         start_date = data["start_date"]
         end_date = data["end_date"]
-        start_date_obj = datetime.datetime.strptime(
+        start_date_obj = datetime.strptime(
             start_date, '%Y-%m-%d').date()
-        end_date_obj = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date()
         queryset = Flight.objects.filter(
             scheduledDate__range=[start_date_obj, end_date_obj])
         queryset = queryset.filter(status='aterrissado') | queryset.filter(
@@ -187,8 +221,8 @@ def chooseReport(request):
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Managers')
 def specificReport(request, startDate, endDate):
     context = {}
-    start_date_obj = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
-    end_date_obj = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
+    start_date_obj = datetime.strptime(startDate, '%Y-%m-%d').date()
+    end_date_obj = datetime.strptime(endDate, '%Y-%m-%d').date()
     queryset = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
     data = queryset.filter(status='aterrissado') | queryset.filter(
@@ -201,8 +235,8 @@ def specificReport(request, startDate, endDate):
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Managers')
 def generalReport(request, startDate, endDate):
     context = {}
-    start_date_obj = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
-    end_date_obj = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
+    start_date_obj = datetime.strptime(startDate, '%Y-%m-%d').date()
+    end_date_obj = datetime.strptime(endDate, '%Y-%m-%d').date()
     queryset_all = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
     queryset_all = queryset_all.filter(
