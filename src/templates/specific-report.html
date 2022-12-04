@@ -32,18 +32,24 @@
           Aqui são apresentadas as informações do relatório gerado.</small
         >
       </div>
+      <div class="d-inline-flex align-items-center justify-content-between">
+        <h5 class="text-bg-primary mb-0 p-2 rounded"><i class="fa fa-calendar"></i> Período de Análise: </h5>
+        <p class="lead mb-0" style="margin-left:8px">{{startDate}} - {{endDate}}</p>
+      </div>
       <div class="row align-items-center mt-4">
         <table class="table table-bordered">
           <thead>
             <tr class="text-light bg-primary">
               <th scope="col">Código de Voo</th>
-              <th scope="col">Companhia</th>
-              <th scope="col">Status</th>
+              <th scope="col"><p>Companhia</p></th>
+              <th scope="col">Aeroporto de Partida</th>
+              <th scope="col">Aeroporto de Destino</th>
+              <th scope="col"><p>Status</p></th>
               <th scope="col">Horário Previsto</th>
               <th scope="col">Horário Real</th>
               <th scope="col">Data Prevista</th>
-              <th scope="col">Data Real</th>
-              <th scope="col">Atraso</th>
+              <th scope="col"><p>Data Real</p></th>
+              <th scope="col"><p>Atraso</p></th>
             </tr>
           </thead>
           <tbody>
@@ -52,17 +58,21 @@
             <tr class="table-danger">
               <th scope="row">{{flight.route.flightCode}}</th>
               <td>{{flight.route.airline}}</td>
+              <td>{{flight.route.departureAirport}}</td>
+              <td>{{flight.route.arrivalAirport}}</td>
               <td scope="row">{{flight.status}}</td>
               <td>{{flight.route.scheduledTime}}</td>
-              <td>{{flight.realTime}}</td>
+              <td>-</td>
               <td>{{flight.scheduledDate}}</td>
-              <td>{{flight.realDate}}</td>
+              <td>-</td>
               <td>{{flight.delay}}</td>
             </tr>
             {% elif flight.delay == 'sem atraso' %}
             <tr class="table-success">
               <th scope="row">{{flight.route.flightCode}}</th>
               <td>{{flight.route.airline}}</td>
+              <td>{{flight.route.departureAirport}}</td>
+              <td>{{flight.route.arrivalAirport}}</td>
               <td scope="row">{{flight.status}}</td>
               <td>{{flight.route.scheduledTime}}</td>
               <td>{{flight.realTime}}</td>
@@ -74,6 +84,8 @@
             <tr>
               <th scope="row">{{flight.route.flightCode}}</th>
               <td>{{flight.route.airline}}</td>
+              <td>{{flight.route.departureAirport}}</td>
+              <td>{{flight.route.arrivalAirport}}</td>
               <td scope="row">{{flight.status}}</td>
               <td>{{flight.route.scheduledTime}}</td>
               <td>{{flight.realTime}}</td>

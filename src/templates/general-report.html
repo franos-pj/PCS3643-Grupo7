@@ -38,15 +38,21 @@
           Aqui são apresentadas as informações do relatório gerado.</small
         >
       </div>
+      <div class="d-inline-flex align-items-center justify-content-between">
+        <h5 class="text-bg-primary mb-0 p-2 rounded"><i class="fa fa-calendar"></i> Período de Análise: </h5>
+        <p class="lead mb-0" style="margin-left:8px">{{startDate}} - {{endDate}}</p>
+      </div>
       <div class="row align-items-center mt-4">
         <table class="table table-bordered table-striped">
           <thead>
             <tr class="text-light bg-dark">
-              <th scope="col">Companhia</th>
-              <th scope="col">Nº de voos</th>
+              <th scope="col align-middle">Companhia Aérea</th>
+              <th scope="col">Nº total de voos</th>
               <th scope="col">Nº de voos cancelados</th>
-              <th scope="col">Nº de voos partindo do aeroporto</th>
-              <th scope="col">Nº de voos atrasados</th>
+              <th scope="col">Nº de voos realizados</th>
+              <th scope="col">Nº de decolagens em FLL</th>
+              <th scope="col">Nº de aterrisagens em FLL</th>
+              <th scope="col">Nº de voos com atraso</th>
             </tr>
           </thead>
           <tbody>
@@ -55,7 +61,9 @@
               <th scope="row">{{row.route__airline}}</th>
               <td>{{row.numFlights}}</td>
               <td>{{row.numFlightsCancelled}}</td>
+              <td>{{row.numFlightsConcluded}}</td>
               <td>{{row.numFlightsDeparture}}</td>
+              <td>{{row.numFlightsArrival}}</td>
               <td>{{row.numFlightsDelayed}}</td>
             </tr>
             {% endfor %}

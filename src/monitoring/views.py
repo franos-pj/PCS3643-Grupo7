@@ -228,6 +228,8 @@ def specificReport(request, startDate, endDate):
     data = queryset.filter(status='aterrissado') | queryset.filter(
         status='cancelado') | queryset.filter(status='decolagem finalizada').order_by('scheduledDate')
     context['data'] = list(data)
+    context['startDate'] = start_date_obj.strftime('%d/%m/%Y')
+    context['endDate'] = end_date_obj.strftime('%d/%m/%Y')
     return render(request, "specific-report.html", context)
 
 
@@ -248,12 +250,17 @@ def generalReport(request, startDate, endDate):
     data = queryset_all.values('route__airline').annotate(
         numFlights=Count('flightId'),
         numFlightsCancelled=Count('flightId', filter=Q(status='cancelado')),
+        numFlightsConcluded=Count('flightId', filter=(Q(status='decolagem finalizada') | Q(status='aterrissado'))),
         numFlightsDeparture=Count(
-            'flightId', filter=Q(route__departureAirport="FLL")),
+            'flightId', filter=Q(route__departureAirport="FLL", status="decolagem finalizada")),
+        numFlightsArrival=Count(
+            'flightId', filter=Q(route__arrivalAirport="FLL", status="aterrissado")),
         numFlightsDelayed=Count('flightId', filter=(
             Q(difDate__gt=timedelta(seconds=0)) | Q(difTime__gt=timedelta(seconds=0))))
     ).order_by('route__airline')
     context['data'] = list(data)
+    context['startDate'] = start_date_obj.strftime('%d/%m/%Y')
+    context['endDate'] = end_date_obj.strftime('%d/%m/%Y')
     return render(request, "general-report.html", context)
 
 
