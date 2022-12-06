@@ -68,7 +68,7 @@
                 <td>{{flight.route.flightCode}}</td>
                 <td>
                   {% if flight.status %} 
-                    {% if flight.status == 'programado' or flight.status == 'taxiando' or flight.status == 'pronto' or flight.status == 'autorizado' %}
+                    {% if flight.status != "decolagem finalizada" %}
                     embarque finalizado
                     {% else %} 
                     {{ flight.status }}

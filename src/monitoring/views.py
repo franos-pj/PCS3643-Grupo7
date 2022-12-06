@@ -32,28 +32,16 @@ def index(request):
     currentDate = date.today()
     currentTime = datetime.now().time()
     tomorrow = currentDate + timedelta(1)
-
     context = {}
 
-    flightListAll = Flight.objects.all().filter(scheduledDate__gte=currentDate, scheduledDate__lte=tomorrow)
+    flightListAll = Flight.objects.all().filter(scheduledDate__gte=currentDate, scheduledDate__lt=tomorrow)
 
     flightListArrivalAll = flightListAll.filter(route__arrivalAirport='FLL')
     flightListDepartureAll = flightListAll.filter(route__departureAirport='FLL')
 
-    flightListArrival = (
-        flightListArrivalAll.exclude(status=None)
-    ).order_by('-scheduledDate').order_by('-route__scheduledTime')
+    flightListArrival = flightListArrivalAll.order_by('-scheduledDate').order_by('-route__scheduledTime')
 
-    flightListDeparture = (
-        flightListDepartureAll.filter(status=None) | 
-        flightListDepartureAll.filter(status='embarcando') | 
-        flightListDepartureAll.filter(status='cancelado') |
-        flightListDepartureAll.filter(status='programado') |
-        flightListDepartureAll.filter(status='taxiando') |
-        flightListDepartureAll.filter(status='pronto') |
-        flightListDepartureAll.filter(status='autorizado') |
-        flightListDepartureAll.filter(status='decolagem finalizada') 
-    ).order_by('-scheduledDate').order_by('-route__scheduledTime')
+    flightListDeparture = flightListDepartureAll.order_by('-scheduledDate').order_by('-route__scheduledTime')
 
     context['currentDate'] = currentDate
     context['currentTime'] = currentTime
@@ -286,6 +274,10 @@ def routesRecords(request):
                         "id": flightCode, "redirectPath": None}
             return HttpResponse(json.dumps(response))
     else:
+        context = {}
+        routesList = Route.objects.all()
+        context["routesList"] = routesList
+        print(context)
         return render(request, "routes-records.html")
 
 
