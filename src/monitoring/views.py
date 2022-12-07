@@ -28,6 +28,22 @@ statusArrivalPermissionTree = {
                      "em voo": ["aterrissado"]},
 }
 
+usersMap = {
+    "Airlines": "Companhia Aérea",
+    "Pilots": "Piloto",
+    "ControlTower": "Torre de Controle",
+    "Managers": "Gerente de Operações",
+    "Operators": "Operador de Voo"
+}
+
+userProfileImgUrl = {
+    "Airlines": "https://cdn-icons-png.flaticon.com/512/6534/6534544.png",
+    "Pilots": "https://img.freepik.com/premium-vector/pilot-icon-flat-design-style-isolated-background-vector-illustration-avatars-pilot_153097-1030.jpg?w=2000",
+    "ControlTower": "https://cdn-icons-png.flaticon.com/512/825/825904.png",
+    "Managers": "https://cdn-icons-png.flaticon.com/512/2503/2503707.png",
+    "Operators": "https://cdn-icons-png.flaticon.com/512/6598/6598835.png"
+}
+
 def index(request):
     currentDate = date.today()
     currentTime = datetime.now().time()
@@ -92,9 +108,15 @@ def signIn(request):
                   in ['Pilots', 'Airlines', 'ControlTower'])
 def dashboard(request):
     context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
     flightList = Flight.objects.all().exclude(status='cancelado').exclude(
         status='aterrissado').exclude(status='decolagem finalizada').order_by('-scheduledDate')
     context['flightList'] = flightList
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
     return render(request, "dashboard.html", context)
 
 
@@ -104,6 +126,8 @@ def dashboard(request):
 def flightInfo(request, flightId):
     context = {}
     userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
     timeInputDisabled = True
     flight = get_object_or_404(Flight, flightId=flightId)
     flightCurrentStatus = flight.status
@@ -178,12 +202,22 @@ def flightInfo(request, flightId):
     context['optionStatus'] = optionStatus
     context['flightCurrentStatus'] = flightCurrentStatus
     context['timeInputDisabled'] = timeInputDisabled
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
     return render(request, "flight-info.html", context)
 
 
 @login_required
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Managers')
 def chooseReport(request):
+    context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
     if request.method == "POST":
         data = request.POST
         start_date = data["start_date"]
@@ -200,9 +234,9 @@ def chooseReport(request):
             return HttpResponse(json.dumps(response))
         else:
             response = {"success": False}
-            return HttpResponse(json.dumps(response))
+            return HttpResponse(json.dumps(response), context)
     else:
-        return render(request, "choose-report.html")
+        return render(request, "choose-report.html", context)
 
 
 @login_required
@@ -255,7 +289,14 @@ def generalReport(request, startDate, endDate):
 @login_required
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Operators')
 def routesAndFlights(request):
-    return render(request, "routes-and-flights.html")
+    context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
+    return render(request, "routes-and-flights.html", context)
 
 
 @login_required
