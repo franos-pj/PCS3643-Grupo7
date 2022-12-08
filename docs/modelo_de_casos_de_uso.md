@@ -4,9 +4,9 @@
 
 **Nome:** Cadastrar voo
 
-**Descrição:** Cadastrar, ler, atualizar e deletar as informações básicas de um voo, como código do voo, rota entre origem e destino e data/horário previstos de partida e chegada do voo
+**Descrição:** Cadastrar, ler, atualizar e deletar as informações básicas de uma rota ou de um voo
 
-**Evento iniciador:** seleção de cadastro de voo no sistema
+**Evento iniciador:** seleção de cadastro de rota no sistema
 
 **Atores:** Operador de voo
 
@@ -14,62 +14,132 @@
 
 **Sequência de eventos:**
 
-1. Operador de voo seleciona a opção de cadastro de voo.
-2. Sistema solicita código de voo.
-3. Operador de voo insere código de voo.
-4. Sistema solicita tipo de ação.
-5. Operador de voo seleciona opção de cadastro de um novo voo.
-6. Sistema verifica se código inserido corresponde a um voo já cadastrado.
-7. Sistema solicita informações básicas do voo.
-8. Operador de voo insere as informações mínimas do voo (a companhia aérea, a rota com aeroporto de origem e aeroporto de destino do voo, data prevista de partida e horário previsto de partida, ou data prevista de chegada e horário previsto de chegada do voo).
-9. Sistema exibe as informações inseridas do novo voo e solicita confirmação.
-10. Operador de voo confirma as informações inseridas.
-11. Sistema verifica se as informações básicas mínimas foram fornecidas no sistema e armazena as informações inseridas do novo voo.
-12. Fim do caso de uso.
+1. Operador de voo seleciona a opção de cadastro de rota.
+2. Sistema solicita código de voo, companhia aérea, aeroporto de origem, aeroporto de destino e horário previsto.
+3. Operador de voo insere as informações solicitadas.
+4. Sistema solicita a confirmação das informações de cadastro de rota.
+5. Operador de voo confirma o cadastro da rota.
+6. Sistema verifica se todas as informações foram inseridas e também a validade das mesmas (código de voo ainda não cadastrado, aeroporto de origem diferente de destino e um dos aeroportos como FLL).
+7. Sistema armazena as informações inseridas da nova rota no banco de dados e exibe mensagem de sucesso ao operador de voo.
+8. Operador de voo finaliza a operação de cadastro de rota.
+9. Fim do caso de uso.
 
-**Pós-condição:** informações básicas do voo cadastradas no banco de dados do sistema
+**Pós-condição:** informações da rota cadastradas no banco de dados do sistema
 
 **Fluxos alternativos:**
 
-1. Operador de voo seleciona opção de leitura das informações de um voo (passo 5):
-  1. Sistema verifica se código inserido corresponde a um voo já cadastrado.
-  2. Sistema exibe as informações armazenadas correspondentes ao código do voo inserido
-  3. Operador finaliza a operação de leitura.
-  4. Fim do fluxo alternativo.
+1. Operador de voo seleciona opção de leitura das informações de uma rota (passo 1):
+  * a. Sistema solicita o código de voo da rota.
+  * b. Operador de voo seleciona um código de voo e solicita a busca da rota.
+  * c. Sistema exibe as informações armazenadas correspondentes ao código do voo da rota.
+  * d. Operador de voo finaliza a operação de leitura de rota.
+  * e. Fim do fluxo alternativo.
 
-1. Operador de voo seleciona opção de atualização das informações de um voo (passo 5):
-  1. Sistema verifica se código inserido corresponde a um voo já cadastrado.
-  2. Sistema solicita a inserção das novas informações do voo.
-  3. Operador de voo insere as novas informações do voo.
-  4. Sistema verifica a consistência das informações inseridas.
-  5. Fim do fluxo alternativo.
+2. Operador de voo seleciona opção de atualização das informações de uma rota (passo 1):
+  * a. Sistema solicita o código de voo da rota.
+  * b. Operador de voo seleciona um código de voo e solicita a busca da rota.
+  * c. Sistema exibe as informações armazenadas correspondentes ao código do voo da rota.
+  * d. Operador de voo seleciona opção de atualização da rota.
+  * e. Sistema solicita a inserção das novas informações da rota.
+  * f. Operador de voo insere novas informações da rota e solicita atualização.
+  * g. Sistema solicita a confirmação da atualização das informações da rota.
+  * h. Operador de voo confirma a atualização da rota.
+  * i. Sistema verifica se todas as informações estão presentes e também a validade das mesmas.
+  * j. Sistema armazena as informações atualizadas da rota no banco de dados, exibe mensagem de sucesso e também as informações atualizadas da rota ao operador de voo.
+  * k. Operador de voo finaliza a operação de atualização de rota.
+  * l. Fim do fluxo alternativo.
 
-1. Operador de voo seleciona opção de exclusão de um voo (passo 5):
-  1. Sistema verifica se código inserido corresponde a um voo já cadastrado.
-  2. Sistema exclui as informações correspondentes ao código do voo inserido.
-  3. Fim do fluxo alternativo.
+3. Operador de voo seleciona opção de exclusão de uma rota (passo 1):
+  * a. Sistema solicita o código de voo da rota.
+  * b. Operador de voo seleciona um código de voo e solicita a busca da rota.
+  * c. Sistema exibe as informações armazenadas correspondentes ao código do voo da rota.
+  * d. Operador de voo seleciona opção de exclusão da rota.
+  * e. Sistema solicita a confirmação da exclusão da rota.
+  * f. Operador de voo confirma a exclusão da rota.
+  * g. Sistema exclui as informações da rota e dos voos associados a esta rota do banco de dados, e exibe mensagem de sucesso ao operador de voo.
+  * k. Operador de voo finaliza a operação de exclusão de rota.
+  * l. Fim do fluxo alternativo.
+
+4. Operador de voo seleciona a opção de cadastro de um novo voo (Passo 1):
+* a. Sistema solicita código de voo de rota já cadastrada e data prevista.
+* b. Operador de voo seleciona um código de voo, insere uma data prevista e solicita o cadastro.
+* c. Sistema solicita a confirmação das informações de cadastro de voo.
+* d. Operador de voo confirma o cadastro do voo.
+* e. Sistema verifica se todas as informações foram inseridas e também a validade das mesmas (código de voo já cadastrado e data prevista posterior a data atual).
+* f. Sistema armazena as informações inseridas do novo voo no banco de dados e exibe mensagem de sucesso ao operador de voo.
+* g. Operador de voo finaliza a operação de cadastro de voo.
+* k. Fim do fluxo alternativo.
+
+5. Operador de voo seleciona opção de leitura das informações de um voo (passo 1):
+  * a. Sistema solicita o código de voo e data prevista do voo.
+  * b. Operador de voo seleciona um código de voo, insere a data prevista e solicita a busca do voo.
+  * c. Sistema exibe as informações armazenadas correspondentes ao código do voo e data prevista do voo.
+  * d. Operador de voo finaliza a operação de leitura de voo.
+  * e. Fim do fluxo alternativo.
+
+6. Operador de voo seleciona opção de atualização das informações de um voo (passo 5):
+  * a. Sistema solicita o código de voo e data prevista do voo.
+  * b. Operador de voo seleciona um código de voo, insere a data prevista e solicita a busca do voo.
+  * c. Sistema exibe as informações armazenadas correspondentes ao código do voo e data prevista do voo.
+  * d. Operador de voo seleciona opção de atualização do voo.
+  * e. Sistema solicita a inserção da nova data prevista do voo.
+  * f. Operador de voo insere nova data prevista do voo e solicita atualização.
+  * g. Sistema solicita a confirmação da atualização da data prevista do voo.
+  * h. Operador de voo confirma a atualização do voo.
+  * i. Sistema verifica se a informação da data prevista está presente e também a validade da mesma.
+  * j. Sistema armazena a data prevista atualizada do voo no banco de dados, exibe mensagem de sucesso e também as informações atualizadas do voo ao operador de voo.
+  * k. Operador de voo finaliza a operação de atualização de voo.
+  * e. Fim do fluxo alternativo.
+
+7. Operador de voo seleciona opção de exclusão de um voo (passo 5):
+  * a. Sistema solicita o código de voo e data prevista do voo.
+  * b. Operador de voo seleciona um código de voo, insere a data prevista e solicita a busca do voo.
+  * c. Sistema exibe as informações armazenadas correspondentes ao código do voo e data prevista do voo.
+  * d. Operador de voo seleciona opção de exclusão do voo.
+  * e. Sistema solicita a confirmação da exclusão do voo.
+  * f. Operador de voo confirma a exclusão do voo.
+  * g. Sistema exclui as informações do voo do banco de dados e exibe mensagem de sucesso ao operador de voo.
+  * k. Operador de voo finaliza a operação de exclusão de voo.
+  * l. Fim do fluxo alternativo.
 
 **Exceções:**
 
+1. Há informações ausentes ou inválidas de rota (passo 6 ou Fluxo Alternativo 2 - passo i):
+  * a. Sistema exibe mensagem de erro ao operador de voo.
+  * b. Sistema cancela cadastro ou atualização da rota.
+  * c. Fim do fluxo da exceção.
+2. Nenhum código de voo de rota é selecionado (Fluxo Alternativo 1, 2 ou 3 - passo b):
+  * a. Sistema exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
+3. Há informações ausentes ou inválidas de voo (Fluxo Alternativo 4 - passo e ou Fluxo Alternativo 6 - passo i):
+  * a. Sistema exibe mensagem de erro ao operador de voo.
+  * b. Sistema cancela cadastro ou atualização do voo.
+  * c. Fim do fluxo da exceção.
+4. Nenhum código de voo de rota e/ou nenhuma data prevista é(são) selecionado(s) (Fluxo Alternativo 5, 6 ou 7 - passo b):
+  * a. Sistema exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
+
+
+
 1. Código de voo já cadastrado (passo 6):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
 2. Informações básicas mínimas não foram inseridas (passo 11):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
 3. Código de voo ainda não foi cadastrado (Fluxos Alternativos 1, 2 e 3 - passo a):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
 4. Informações atualizadas são inconsistentes (Fluxo Alternativo 2 - passo d):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Sistema cancela a atualização das informações do voo.
-  3. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Sistema cancela a atualização das informações do voo.
+  * c. Fim do fluxo da exceção.
 
 ## Caso de Uso 2
 
 **Nome:** Monitorar voos
 
-**Descrição:** Atualizar e visualizar as informações do voo (_status_de voo e horários de chegada e partida reais)
+**Descrição:** Atualizar e visualizar as informações do voo (_status_ de voo e horários de chegada e partida reais)
 
 **Evento iniciador:** seleção de monitoramento de voos no sistema
 
@@ -96,17 +166,17 @@
 **Fluxos alternativos:**
 
 1. Usuário seleciona opção de apenas visualizar as informações do voo (passo 6):
-  1. Sistema exibe informações referentes ao voo.
-  2. Fim do fluxo alternativo.
+  * a. Sistema exibe informações referentes ao voo.
+  * b. Fim do fluxo alternativo.
 
 **Exceções:**
 
 1. Código de voo ainda não foi cadastrado (passo 4):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
 2. _Status_ de voo ou horários de chegada/partida reais inválidos (passo 11):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
 
 ## Caso de Uso 3
 
@@ -136,14 +206,14 @@
 **Fluxos alternativos:**
 
 1. Usuário seleciona a opção de gerar relatório específico à nível de voo (passo 6):
-  1. Sistema gera relatório com informações específicas dos voos do aeroporto.
-  2. Fim do fluxo alternativo.
+  * a. Sistema gera relatório com informações específicas dos voos do aeroporto.
+  * b. Fim do fluxo alternativo.
 
 **Exceções:**
 
 1. Período de tempo informado para análise apresenta data de início posterior a data de fim ou não há voos no período selecionado (passo 4):
-  1. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  2. Fim do fluxo da exceção.
+  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+  * b. Fim do fluxo da exceção.
 
 ## Diagrama de Caso de Usos:
 
