@@ -10,11 +10,13 @@ Este é um projeto realizado na disciplina PCS3643 - Labortório de Engenharia d
 
 O projeto consiste em um sistema de monitoramento de voos, de acordo com este [Enunciado](./docs/enunciado.pdf).
 
-O modelo de casos de uso e o modelo de classes elaborados para o projeto estão disponíveis em [Modelo de Casos de Uso](./docs/modelo_de_casos_de_uso.md) e [Modelo de Classes](./docs/modelo_de_classes.md).
+A especificação de casos de uso elaborada para o projeto está disponível em [Modelo de Casos de Uso](./docs/modelo_de_casos_de_uso.md).
 
-O plano de testes de validação elaborado para o projeto é apresentado em [Plano de Testes de Validação](./docs/plano_testes_validacao.md) e o diagrama entidade-relacionamento pode ser consultado em [Diagrama Entidade-Relacionamento](./docs/images/der.png).
+O plano de testes de validação elaborado para o projeto é apresentado em [Plano de Testes de Validação](./docs/plano_testes_validacao.md).
 
-Os diagramas de navegação de telas podem ser visualizados em [Diagramas de Navegação de Telas](./docs/navegacao_telas.md).
+O modelo de análise com o diagrama de classes está disponível em [Modelo de Classes](./docs/modelo_de_classes.md).
+
+Para o modelo de projeto, o diagrama entidade-relacionamento pode ser consultado em [Diagrama Entidade-Relacionamento](./docs/images/der.png) e os diagramas de navegação de telas podem ser visualizados em [Diagramas de Navegação de Telas](./docs/navegacao_telas.md).
 
 **O Relatório dos Testes de Validação elaborado pode ser visto em [Relatório dos Testes de Validação](./docs/relatorio_testes_validacao.pdf).**
 
