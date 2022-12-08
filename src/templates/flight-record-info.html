@@ -18,14 +18,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
         crossorigin="anonymous"></script>
-    <title>Information for a specific flight</title>
+    <title>Informações de Cadastro de Voo</title>
 </head>
 
 <body>
-    <div class="container mt-4">
+    <div class="container mt-4 mb-4">
         <div class="row">
-            <h2>Tela com as informações de voo</h2>
-            <p>Permitirá vizualizar as informações</p>
+            <h2>Tela com as informações de cadastro de voo</h2>
+            <p>Edição e visualização das informações de cadastro de voo</p>
             <div class="mt-4" id="flightUpdateFormDiv">
                 <div class="col-md-6">
                   <div class="h-100 p-5 bg-light rounded-3">
@@ -74,9 +74,15 @@
                         <div class="h-100 p-5 bg-light rounded-3">
                             <h2>Voo {{flight.route}}</h2>
                             <hr />
+                            <p>
+                                <b>Trajeto:</b>
+                                {{flight.route.departureAirport}} <i class="bi bi-arrow-right"></i>
+                                {{flight.route.arrivalAirport}}
+                            </p>
                             <p><b>Data prevista:</b> {{flight.scheduledDate}}</p>
-                            <p><b>Data:</b> {{flight.realDate}}</p>
-                            <p><b>Hora:</b> {{flight.realTime}}</p>
+                            <p><b>Horário Previsto:</b> {{flight.route.scheduledTime}}</p>
+                            <p><b>Data Real:</b> {% if flight.realDate %} {{flight.realDate}} {% else %} -- {% endif %} </p>
+                            <p><b>Horário Real:</b>  {% if flight.realTime %} {{flight.realTime}} {% else %} -- {% endif %} </p>
                             <p><b>Status:</b> {% if flight.status %} {{ flight.status }} {% else %}
                                 previsto {% endif %}</p>
                         </div>
@@ -172,7 +178,7 @@
         <div class="modal-dialog modal-dialog-centered col-8">
             <div class="modal-content">
                 <div class="modal-body  text-center">
-                    <h4 class="modal-title" id="deleteConfirmedModalLabel" style="width:200px">
+                    <h4 class="modal-title" id="deleteConfirmedModalLabel">
                     </h4>
                     <a href="{% url 'flightsRecords' %}" class=" btn btn-primary mt-4">
                         OK
@@ -183,6 +189,9 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
+            const currentDate = new Date().toJSON().slice(0, 10)
+            $("#id_scheduledDate").attr({"min": currentDate})
+
             $('#flightUpdateFormDiv').hide()
 
             $('#updateButtonMode').click(function () {

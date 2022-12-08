@@ -103,13 +103,13 @@ def createGroups(apps, schema_editor):
 
 def createUsers(apps, schema_editor):
     mockUsers = [
-        {"username": "francisco.mariani", "password": "SR71"},
-        {"username": "lucas.palmiro", "password": "A380"},
-        {"username": "lucas.garcia", "password": "B52"},
-        {"username": "michelet.chavez", "password": "PCS3643"},
-        {"username": "kechi.hirama", "password": "PCS3643"}
+        {"username": "piloto", "password": "1234"},
+        {"username": "torre", "password": "1234"},
+        {"username": "funcionario", "password": "1234"},
+        {"username": "operador", "password": "1234"},
+        {"username": "gerente", "password": "1234"}
     ]
-
+    
     pilotGroup = Group.objects.get_or_create(name="Pilots")[0]
     towerGroup = Group.objects.get_or_create(name="ControlTower")[0]
     airlineGroup = Group.objects.get_or_create(name="Airlines")[0]

@@ -39,13 +39,43 @@
   </head>
 
   <body>
-    <div class="container mt-4">
+    <div class="container mt-4 mb-4">
       <div class="row">
-        <h2 class="mb-4">Registros de Rotas e de Voos</h2>
+        {% comment %} <h2 class="mb-4">Registros de Rotas e de Voos</h2> {% endcomment %}
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div>
+            <h2>Registros de Rotas e de Voos</h2>
+            <div style="max-width:800px;display:flex;flex-direction:column;">
+            <small>Uma rota é definida por por um trajeto (origem-destino) e por um horário previsto de ocorrência</small>
+            <small>Um voo pode ser entendido como a aplicação de uma rota em uma data específica. </small>
+            <small class="text-muted">Dois voos diferentes não podem possuir uma mesma combinação de rota e de data prevista</small>
+          </div>
+        </div>
+          <div class="col-3.5">
+            <div class="card" style="border-radius: 8px;">
+              <div class="card-body p-3">
+                <div class="d-flex text-black inline">
+                  <div class="flex-shrink-0">
+                    <img src="{{userUrlImg}}"
+                      alt="Generic placeholder image" class="img-fluid"
+                      style="width: 80px; border-radius: 1px;">
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-1">{{username}}</h6>
+                    <p class="mb-1" style="color: #2b2a2a;">{{userType}}</p>
+                    <div class="d-flex">
+                      <a href="{% url 'login' %}" type="button" class="btn btn-danger me-1 btn-sm">Log Out</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row align-items-top">
         <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
+          <div class="card mb-4 box-shadow h-100" style="max-height:500px;">
             <img class="card-img-top" src="{% static 'images/routes.png' %}" alt="Routes image cap">
             <div class="card-body">
               <h4 class="text-primary">Rotas <i class="bi bi-cursor-fill"></i> </h4>
@@ -57,12 +87,12 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
+          <div class="card mb-4 box-shadow h-100" style="max-height:500px;">
             <img class="card-img-top" src="{% static 'images/flight.png' %}" alt="Flights image cap">
             <div class="card-body">
               <h4 class="text-primary">Voos  <i class="bi bi-airplane-fill"></i></h4>
               <p class="card-text">Seção voltada para o cadastro de novos voos e controle dos registros inseridos (consulta, atualização e exclusão)</p>
-                  <a type="button" href="{% url 'flightsRecords' %}" class="btn btn-sm btn-outline-primary ">Selecionar</a>
+                  <a type="button" href="{% url 'flightsRecords' %}" class="btn btn-outline-primary ">Selecionar</a>
             </div>
           </div>
         </div>

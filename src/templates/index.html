@@ -23,11 +23,11 @@
         transform: rotate(90deg);
       }
     </style>
-    <title>Flight display</title>
+    <title>Painel de Voos</title>
   </head>
 
   <body>
-    <div class="container mt-4">
+    <div class="container mt-4 mb-4">
       <div>
         <h2>Painel de exibição de voos</h2>
 
@@ -68,10 +68,14 @@
                 <td>{{flight.route.flightCode}}</td>
                 <td>
                   {% if flight.status %} 
-                    {% if flight.status == 'programado' or flight.status == 'taxiando' or flight.status == 'pronto' or flight.status == 'autorizado' %}
+                    {% if flight.status == "decolagem finalizada" %}
+                    decolagem finalizada
+                    {% elif flight.status == "cancelado" %} 
+                    cancelado
+                    {% elif flight.status == "embarcando" %}
+                    embarque em andamento
+                    {% else %}
                     embarque finalizado
-                    {% else %} 
-                    {{ flight.status }}
                     {% endif %}
                   {% else %} 
                   previsto 
@@ -103,6 +107,7 @@
               <tr class="text-light bg-primary">
                 <th scope="col">Companhia Aérea</th>
                 <th scope="col">Código de Voo</th>
+                <th scope="col">Status</th>
                 <th scope="col">Origem</th>
                 <th scope="col">Chegada Prevista</th>
                 <th scope="col">Chegada Real</th>
@@ -113,6 +118,13 @@
               <tr>
                 <td>{{flight.route.airline}}</td>
                 <td>{{flight.route.flightCode}}</td>
+                <td>
+                  {% if flight.status %} 
+                    {{ flight.status }}
+                  {% else %} 
+                  previsto 
+                  {% endif %}
+                </td>
                 <td>{{flight.route.departureAirport}}</td>
                 <td>{{flight.route.scheduledTime}}</td>
                 <td>

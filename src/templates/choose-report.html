@@ -44,7 +44,36 @@
   <body>
     <div class="container mt-4">
       <div class="row">
-        <h2 class="mb-4">Geração de relatórios</h2>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div>
+          <h2>Geração de relatórios</h2>
+          <div style="max-width:800px;display:flex;flex-direction:column;">
+          <small>A categoria específica fornece as informações individuais mais relevantes de cada voo </small>
+          <small>A geral traz métricas sobre o conjunto de voos de cada companhia aérea </small>
+          <small class="text-muted">O histórico fornecido contém apenas registros com status finalizados ('decolagem finalizada', 'aterrissado' ou 'cancelado')</small>
+          </div>
+        </div>
+          <div class="col-3.5">
+            <div class="card" style="border-radius: 8px;">
+              <div class="card-body p-3">
+                <div class="d-flex text-black inline">
+                  <div class="flex-shrink-0">
+                    <img src="{{userUrlImg}}"
+                      alt="Generic placeholder image" class="img-fluid"
+                      style="width: 80px; border-radius: 1px;">
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-1">{{username}}</h6>
+                    <p class="mb-1" style="color: #2b2a2a;">{{userType}}</p>
+                    <div class="d-flex">
+                      <a href="{% url 'login' %}" type="button" class="btn btn-danger me-1 btn-sm">Log Out</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row align-items-center">
         <div class="col-auto">
@@ -210,7 +239,7 @@
               }
               else {
                 $("#searchModal").modal('show');
-                $('#searchModalLabel').text("Não há voos previstos para a data informada")
+                $('#searchModalLabel').text("Não há voos registrados como concluídos ou cancelados para a data de análise informada")
                 $('#searchModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
               }
             }
@@ -244,7 +273,7 @@
             }
             else {
               $("#searchModal").modal('show');
-              $('#searchModalLabel').text("Não há voos previstos para a data informada")
+              $('#searchModalLabel').text("Não há voos registrados como concluídos ou cancelados para a data de análise informada")
               $('#searchModalLabel').append('<i class="bi bi-emoji-frown" id = "failureIcon"></i>')
             }
           }

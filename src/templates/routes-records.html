@@ -33,11 +33,23 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
     ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <script
       src="https://kit.fontawesome.com/8e20749acf.js"
       crossorigin="anonymous"
     ></script>
-    <title>Routes records control screen</title>
+    <script src=  
+    "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  
+    </script>  
+    
+    <script src=  
+    "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">  
+    </script>  
+    
+    <link href=  
+    "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css"
+        rel="stylesheet" type="text/css" /> 
+    <title>Controle dee Registro de Rotass</title>
   </head>
 
   <body>
@@ -47,7 +59,7 @@
       </div>
       <div class="row align-items-center">
         <div class="col-md-6">
-          <div class="h-100 p-5 bg-light rounded-3">
+          <div class="p-5 bg-light rounded-3" style="height:298px;">
             <h2>Cadastro de Rota</h2>
             <p>
               Selecione "Cadastrar" caso deseje inserir uma nova rota no sistema
@@ -61,10 +73,10 @@
           </div>
         </div>
         <div class="col-md-6">
-          <div class="h-100 p-5 text-bg-dark rounded-3">
+          <div class="p-5 text-bg-dark rounded-3" style="height:298px;">
             <h2>Informações de Rota</h2>
             <p>
-              Insira o código de voo abaixo para consultar, editar ou excluir
+              Selecione o código de voo abaixo para consultar, editar ou excluir
               uma rota
             </p>
             <div class="row g-3 align-items-center">
@@ -74,12 +86,12 @@
                 >
               </div>
               <div class="col-auto">
-                <input
-                  type="text"
-                  id="flight-code"
-                  class="form-control"
-                  placeholder="Digite um código de voo"
-                />
+                <select class="form-select form-select" aria-label=".form-select-lg" id="flight-code">
+                  <option selected>Selecione um código de voo</option>
+                  {% for route in routesList %}
+                  <option value="{{route.flightCode}}">{{route.flightCode}}</option>
+                  {% endfor %}
+                </select>
               </div>
               <div class="col-auto">
                 <button class="btn btn-outline-light" id="searchRoute">
@@ -122,6 +134,17 @@
       </div>
     </div>
     <script type="text/javascript">
+      $( function() {
+        var availableTags = [
+            {% for route in routesList %}
+                "{{route.flightCode}}",
+            {% endfor %}
+        ];
+        $( "#searchRoute" ).autocomplete({
+          source: availableTags
+        });
+        console.log(availableTags)
+      } );
       $(document).ready(function () {
         $('#searchRoute').click(function () {
           $.ajax({
@@ -133,16 +156,20 @@
               flightCode: $('#flight-code').val(),
             },
             success: function (response) {
-              console.log(response['success'])
+              let msg;
               if (response.success) {
                 window.location.href = response.redirectPath
               } else {
                 $('#searchModal').modal('show')
-                $('#searchModalLabel').text(
-                  'Não foi possível encontrar a rota informada ' +
-                    response.id +
-                    ' '
-                )
+                if (response.id.includes("Selecione")) {
+                  msg = "Nenhuma rota foi selecionada "
+                }
+                else {
+                  msg = 'Não foi possível encontrar a rota informada ' +
+                  response.id +
+                  ' '
+                }
+                $('#searchModalLabel').text(msg)
                 $('#searchModalLabel').append(
                   '<i class="bi bi-emoji-frown" id = "failureIcon"></i>'
                 )

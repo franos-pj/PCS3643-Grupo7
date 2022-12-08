@@ -28,32 +28,36 @@ statusArrivalPermissionTree = {
                      "em voo": ["aterrissado"]},
 }
 
+usersMap = {
+    "Airlines": "Companhia Aérea",
+    "Pilots": "Piloto",
+    "ControlTower": "Torre de Controle",
+    "Managers": "Gerente de Operações",
+    "Operators": "Operador de Voo"
+}
+
+userProfileImgUrl = {
+    "Airlines": "https://cdn-icons-png.flaticon.com/512/6534/6534544.png",
+    "Pilots": "https://img.freepik.com/premium-vector/pilot-icon-flat-design-style-isolated-background-vector-illustration-avatars-pilot_153097-1030.jpg?w=2000",
+    "ControlTower": "https://cdn-icons-png.flaticon.com/512/825/825904.png",
+    "Managers": "https://cdn-icons-png.flaticon.com/512/2503/2503707.png",
+    "Operators": "https://cdn-icons-png.flaticon.com/512/6598/6598835.png"
+}
+
 def index(request):
     currentDate = date.today()
     currentTime = datetime.now().time()
     tomorrow = currentDate + timedelta(1)
-
     context = {}
 
-    flightListAll = Flight.objects.all().filter(scheduledDate__gte=currentDate, scheduledDate__lte=tomorrow)
+    flightListAll = Flight.objects.all().filter(scheduledDate__gte=currentDate, scheduledDate__lt=tomorrow)
 
     flightListArrivalAll = flightListAll.filter(route__arrivalAirport='FLL')
     flightListDepartureAll = flightListAll.filter(route__departureAirport='FLL')
 
-    flightListArrival = (
-        flightListArrivalAll.exclude(status=None)
-    ).order_by('-scheduledDate').order_by('-route__scheduledTime')
+    flightListArrival = flightListArrivalAll.order_by('-scheduledDate').order_by('-route__scheduledTime')
 
-    flightListDeparture = (
-        flightListDepartureAll.filter(status=None) | 
-        flightListDepartureAll.filter(status='embarcando') | 
-        flightListDepartureAll.filter(status='cancelado') |
-        flightListDepartureAll.filter(status='programado') |
-        flightListDepartureAll.filter(status='taxiando') |
-        flightListDepartureAll.filter(status='pronto') |
-        flightListDepartureAll.filter(status='autorizado') |
-        flightListDepartureAll.filter(status='decolagem finalizada') 
-    ).order_by('-scheduledDate').order_by('-route__scheduledTime')
+    flightListDeparture = flightListDepartureAll.order_by('-scheduledDate').order_by('-route__scheduledTime')
 
     context['currentDate'] = currentDate
     context['currentTime'] = currentTime
@@ -104,9 +108,15 @@ def signIn(request):
                   in ['Pilots', 'Airlines', 'ControlTower'])
 def dashboard(request):
     context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
     flightList = Flight.objects.all().exclude(status='cancelado').exclude(
         status='aterrissado').exclude(status='decolagem finalizada').order_by('-scheduledDate')
     context['flightList'] = flightList
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
     return render(request, "dashboard.html", context)
 
 
@@ -116,6 +126,8 @@ def dashboard(request):
 def flightInfo(request, flightId):
     context = {}
     userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
     timeInputDisabled = True
     flight = get_object_or_404(Flight, flightId=flightId)
     flightCurrentStatus = flight.status
@@ -142,29 +154,33 @@ def flightInfo(request, flightId):
         realTimeUpdate = updateDate['realTime']
         realDateUpdate = updateDate['realDate']
         statusUpdate = updateDate['status']
-        if (statusUpdate in ['decolagem finalizada', 'aterrissado']):
-
-            if (len(realTimeUpdate) > 0):
-                realTimeUpdateObj = datetime.strptime(
-                    realTimeUpdate, '%H:%M').time()
-            else:
+        print(len(statusUpdate))
+        if (statusUpdate == 'decolagem finalizada' or statusUpdate == 'aterrissado'):
+            print(realTimeUpdate)
+            realTimeUpdateObj = None
+            if (len(realTimeUpdate) == 0):
                 error = True
                 error_msg = error_msg + '<p>Horário Real</p>'
-            if (len(realDateUpdate) > 0):
+
+
+            if (len(realDateUpdate) == 0):
+                error = True
+                error_msg = error_msg + '<p>Data Real</p>'
+
+            if (len(realDateUpdate) > 0 and len(realTimeUpdate) > 0):
                 realDateUpdateObj = datetime.strptime(
                     realDateUpdate, '%Y-%m-%d').date()
+                realTimeUpdateObj = datetime.strptime(
+                    realTimeUpdate, '%H:%M').time()
                 if (flight.scheduledDate < realDateUpdateObj):
                     flight.realDate = realDateUpdateObj
                     flight.realTime = realTimeUpdateObj
-                elif (flight.scheduledDate == realDateUpdateObj and realTimeUpdateObj >= flight.route.scheduledTime):
+                elif (flight.scheduledDate == realDateUpdateObj and not (realTimeUpdateObj is None) and realTimeUpdateObj >= flight.route.scheduledTime):
                     flight.realDate = realDateUpdateObj
                     flight.realTime = realTimeUpdateObj
                 else:
                     error = True
                     error_msg = '<p>Entrada inválida: Momento real deve ser posterior à previsão</p>'
-            else:
-                error = True
-                error_msg = error_msg + '<p>Data Real</p>'
 
         if (statusUpdate != flightCurrentStatus):
             flight.status = statusUpdate
@@ -186,16 +202,30 @@ def flightInfo(request, flightId):
                 'error_msg': error_msg + '</li>'
             }
         return HttpResponse(json.dumps(response))
+
+    scheduledTimeFormatted = flight.route.scheduledTime.strftime('%H:%M')
+
     context['flight'] = flight
     context['optionStatus'] = optionStatus
     context['flightCurrentStatus'] = flightCurrentStatus
     context['timeInputDisabled'] = timeInputDisabled
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
+    context['scheduledTimeFormatted'] = scheduledTimeFormatted
     return render(request, "flight-info.html", context)
 
 
 @login_required
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Managers')
 def chooseReport(request):
+    context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
     if request.method == "POST":
         data = request.POST
         start_date = data["start_date"]
@@ -206,15 +236,15 @@ def chooseReport(request):
         queryset = Flight.objects.filter(
             scheduledDate__range=[start_date_obj, end_date_obj])
         queryset = queryset.filter(status='aterrissado') | queryset.filter(
-            status='cancelado').order_by('realDate')
+            status='cancelado') | queryset.filter(status='decolagem finalizada').order_by('realDate')
         if queryset.exists():
             response = {"success": True}
             return HttpResponse(json.dumps(response))
         else:
             response = {"success": False}
-            return HttpResponse(json.dumps(response))
+            return HttpResponse(json.dumps(response), context)
     else:
-        return render(request, "choose-report.html")
+        return render(request, "choose-report.html", context)
 
 
 @login_required
@@ -226,8 +256,10 @@ def specificReport(request, startDate, endDate):
     queryset = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
     data = queryset.filter(status='aterrissado') | queryset.filter(
-        status='cancelado').order_by('scheduledDate')
+        status='cancelado') | queryset.filter(status='decolagem finalizada').order_by('scheduledDate')
     context['data'] = list(data)
+    context['startDate'] = start_date_obj.strftime('%d/%m/%Y')
+    context['endDate'] = end_date_obj.strftime('%d/%m/%Y')
     return render(request, "specific-report.html", context)
 
 
@@ -248,19 +280,31 @@ def generalReport(request, startDate, endDate):
     data = queryset_all.values('route__airline').annotate(
         numFlights=Count('flightId'),
         numFlightsCancelled=Count('flightId', filter=Q(status='cancelado')),
+        numFlightsConcluded=Count('flightId', filter=(Q(status='decolagem finalizada') | Q(status='aterrissado'))),
         numFlightsDeparture=Count(
-            'flightId', filter=Q(route__departureAirport="FLL")),
+            'flightId', filter=Q(route__departureAirport="FLL", status="decolagem finalizada")),
+        numFlightsArrival=Count(
+            'flightId', filter=Q(route__arrivalAirport="FLL", status="aterrissado")),
         numFlightsDelayed=Count('flightId', filter=(
             Q(difDate__gt=timedelta(seconds=0)) | Q(difTime__gt=timedelta(seconds=0))))
     ).order_by('route__airline')
     context['data'] = list(data)
+    context['startDate'] = start_date_obj.strftime('%d/%m/%Y')
+    context['endDate'] = end_date_obj.strftime('%d/%m/%Y')
     return render(request, "general-report.html", context)
 
 
 @login_required
 @user_passes_test(lambda user: Group.objects.get(user=user).name == 'Operators')
 def routesAndFlights(request):
-    return render(request, "routes-and-flights.html")
+    context = {}
+    userGroup = Group.objects.get(user=request.user).name
+    userType = usersMap[userGroup]
+    userUrlImg = userProfileImgUrl[userGroup]
+    context['userType'] = userType
+    context['username'] = request.user
+    context['userUrlImg'] = userUrlImg
+    return render(request, "routes-and-flights.html", context)
 
 
 @login_required
@@ -279,7 +323,10 @@ def routesRecords(request):
                         "id": flightCode, "redirectPath": None}
             return HttpResponse(json.dumps(response))
     else:
-        return render(request, "routes-records.html")
+        context = {}
+        routesList = Route.objects.all().order_by("flightCode")
+        context["routesList"] = routesList
+        return render(request, "routes-records.html", context)
 
 
 @csrf_exempt
@@ -292,12 +339,20 @@ def routeInfo(request, flightCode):
 
     if request.method == "POST":
         if form.is_valid():
-            form.save()
-            response = {
-                "id": form.cleaned_data["flightCode"],
-                "success": True,
-                "error": None,
-            }
+            if (form.data["departureAirport"] != form.data["arrivalAirport"] 
+            and (form.data["departureAirport"] == "FLL" or form.data["arrivalAirport"] == "FLL")):
+                form.save()
+                response = {
+                    "id": form.cleaned_data["flightCode"],
+                    "success": True,
+                    "error": None,
+                }
+            else:
+                response = {
+                "id": form.data["flightCode"],
+                "success": False,
+                "error": "Combinação de aeroporto inválida",
+                }
             return HttpResponse(json.dumps(response))
         else:
             response = {
@@ -329,11 +384,19 @@ def routeRegistration(request):
     # check if form data is valid
     if form.is_valid():
         # save the form data to model
-        form.save()
-        response = {
-            "id": form.cleaned_data["flightCode"],
-            "success": True,
-            "error": None,
+        if (form.data["departureAirport"] != form.data["arrivalAirport"] 
+            and (form.data["departureAirport"] == "FLL" or form.data["arrivalAirport"] == "FLL")):
+            form.save()
+            response = {
+                "id": form.cleaned_data["flightCode"],
+                "success": True,
+                "error": None,
+            }
+        else:
+            response = {
+            "id": form.data["flightCode"],
+            "success": False,
+            "error": "Combinação de aeroporto inválida",
         }
 
         return HttpResponse(json.dumps(response))
@@ -359,29 +422,42 @@ def flightsRecords(request):
         data = request.POST
         route = data["route"]
         scheduledDate = data["scheduledDate"]
-        if Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists():
-            redirectPath = (
-                "flights-records/flights-record-info/"
-                + route
-                + "/"
-                + scheduledDate
-                + "/"
-            )
-            response = {
-                "success": True,
-                "id": route + ' [' + scheduledDate + ']',
-                "redirectPath": redirectPath,
-            }
+        print(route, scheduledDate)
+        try:
+            if Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists():
+                redirectPath = (
+                    "flights-records/flights-record-info/"
+                    + route
+                    + "/"
+                    + scheduledDate
+                    + "/"
+                )
+                response = {
+                    "success": True,
+                    "id": route + ' [' + scheduledDate + ']',
+                    "redirectPath": redirectPath,
+                }
+                return HttpResponse(json.dumps(response))
+            else:
+                response = {
+                    "success": False,
+                    "id": route + ' [' + scheduledDate + ']',
+                    "redirectPath": None,
+                }
             return HttpResponse(json.dumps(response))
-        else:
+        except:
             response = {
-                "success": False,
-                "id": route + ' [' + scheduledDate + ']',
-                "redirectPath": None,
-            }
+                    "success": False,
+                    "id": "",
+                    "redirectPath": None,
+                }
             return HttpResponse(json.dumps(response))
     else:
-        return render(request, "flights-records.html")
+        context = {}
+        flightCodesList = Flight.objects.values_list("route__flightCode", flat=True).order_by("route__flightCode")
+        print(flightCodesList)
+        context["flightCodesList"] = list(dict.fromkeys(flightCodesList))
+        return render(request, "flights-records.html", context)
 
 
 @csrf_exempt
@@ -460,7 +536,7 @@ def flightRecordInfo(request, route, scheduledDate):
 def flightRegistration(request):
 
     context = {}
-
+    currentDate = date.today()
     # create object of form
     form = FlightForm(request.POST or None, request.FILES or None)
 
@@ -486,7 +562,7 @@ def flightRegistration(request):
         return HttpResponse(json.dumps(response))
     elif request.method == "POST":
         response = {
-            "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
+            "id": " informado",
             "success": False,
             "error": form.errors.as_json(),
             "error_msg": ""
@@ -494,5 +570,6 @@ def flightRegistration(request):
         return HttpResponse(json.dumps(response))
 
     context["form"] = form
+    context["currentDate"] = currentDate
 
     return render(request, "flight-registration.html", context)
