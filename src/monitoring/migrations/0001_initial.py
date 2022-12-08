@@ -6,7 +6,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 from monitoring.migration_scripts import (
-    migrationScripts, loadInitialRoutes, loadInitialFlights)
+    migrationScripts)
 
 
 class Migration(migrations.Migration):
@@ -93,7 +93,5 @@ class Migration(migrations.Migration):
                 ('objects', django.contrib.auth.models.UserManager()),
             ],
         ),
-        migrations.RunPython(migrationScripts),
-        migrations.RunPython(loadInitialRoutes),
-        migrations.RunPython(loadInitialFlights),
+        migrations.RunPython(migrationScripts)
     ]
