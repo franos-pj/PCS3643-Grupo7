@@ -37,7 +37,7 @@ python -m venv env
 
 **Windows**
 ```
-.\env\scripts\Activate.ps1
+.\env\bin\Activate.ps1
 ```
 
 **Linux**
