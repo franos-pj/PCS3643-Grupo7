@@ -133,6 +133,9 @@
     </div>
     <script type="text/javascript">
       $(document).ready(function () {
+        const currentDate = new Date().toJSON().slice(0, 10)
+        
+        $("#id_scheduledDate").attr({"min": currentDate})
         $("#register").click(function () {
           $("#routeConfirmation").text($("#id_route").val());
           $("#scheduledDateConfirmation").text($("#id_scheduledDate").val());

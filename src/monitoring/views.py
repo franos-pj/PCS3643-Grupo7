@@ -154,29 +154,33 @@ def flightInfo(request, flightId):
         realTimeUpdate = updateDate['realTime']
         realDateUpdate = updateDate['realDate']
         statusUpdate = updateDate['status']
-        if (statusUpdate in ['decolagem finalizada', 'aterrissado']):
-
-            if (len(realTimeUpdate) > 0):
-                realTimeUpdateObj = datetime.strptime(
-                    realTimeUpdate, '%H:%M').time()
-            else:
+        print(len(statusUpdate))
+        if (statusUpdate == 'decolagem finalizada' or statusUpdate == 'aterrissado'):
+            print(realTimeUpdate)
+            realTimeUpdateObj = None
+            if (len(realTimeUpdate) == 0):
                 error = True
                 error_msg = error_msg + '<p>Horário Real</p>'
-            if (len(realDateUpdate) > 0):
+
+
+            if (len(realDateUpdate) == 0):
+                error = True
+                error_msg = error_msg + '<p>Data Real</p>'
+
+            if (len(realDateUpdate) > 0 and len(realTimeUpdate) > 0):
                 realDateUpdateObj = datetime.strptime(
                     realDateUpdate, '%Y-%m-%d').date()
+                realTimeUpdateObj = datetime.strptime(
+                    realTimeUpdate, '%H:%M').time()
                 if (flight.scheduledDate < realDateUpdateObj):
                     flight.realDate = realDateUpdateObj
                     flight.realTime = realTimeUpdateObj
-                elif (flight.scheduledDate == realDateUpdateObj and realTimeUpdateObj >= flight.route.scheduledTime):
+                elif (flight.scheduledDate == realDateUpdateObj and not (realTimeUpdateObj is None) and realTimeUpdateObj >= flight.route.scheduledTime):
                     flight.realDate = realDateUpdateObj
                     flight.realTime = realTimeUpdateObj
                 else:
                     error = True
                     error_msg = '<p>Entrada inválida: Momento real deve ser posterior à previsão</p>'
-            else:
-                error = True
-                error_msg = error_msg + '<p>Data Real</p>'
 
         if (statusUpdate != flightCurrentStatus):
             flight.status = statusUpdate
@@ -198,6 +202,9 @@ def flightInfo(request, flightId):
                 'error_msg': error_msg + '</li>'
             }
         return HttpResponse(json.dumps(response))
+
+    scheduledTimeFormatted = flight.route.scheduledTime.strftime('%H:%M')
+
     context['flight'] = flight
     context['optionStatus'] = optionStatus
     context['flightCurrentStatus'] = flightCurrentStatus
@@ -205,6 +212,7 @@ def flightInfo(request, flightId):
     context['userType'] = userType
     context['username'] = request.user
     context['userUrlImg'] = userUrlImg
+    context['scheduledTimeFormatted'] = scheduledTimeFormatted
     return render(request, "flight-info.html", context)
 
 
@@ -316,10 +324,9 @@ def routesRecords(request):
             return HttpResponse(json.dumps(response))
     else:
         context = {}
-        routesList = Route.objects.all()
+        routesList = Route.objects.all().order_by("flightCode")
         context["routesList"] = routesList
-        print(context)
-        return render(request, "routes-records.html")
+        return render(request, "routes-records.html", context)
 
 
 @csrf_exempt
@@ -415,29 +422,42 @@ def flightsRecords(request):
         data = request.POST
         route = data["route"]
         scheduledDate = data["scheduledDate"]
-        if Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists():
-            redirectPath = (
-                "flights-records/flights-record-info/"
-                + route
-                + "/"
-                + scheduledDate
-                + "/"
-            )
-            response = {
-                "success": True,
-                "id": route + ' [' + scheduledDate + ']',
-                "redirectPath": redirectPath,
-            }
+        print(route, scheduledDate)
+        try:
+            if Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists():
+                redirectPath = (
+                    "flights-records/flights-record-info/"
+                    + route
+                    + "/"
+                    + scheduledDate
+                    + "/"
+                )
+                response = {
+                    "success": True,
+                    "id": route + ' [' + scheduledDate + ']',
+                    "redirectPath": redirectPath,
+                }
+                return HttpResponse(json.dumps(response))
+            else:
+                response = {
+                    "success": False,
+                    "id": route + ' [' + scheduledDate + ']',
+                    "redirectPath": None,
+                }
             return HttpResponse(json.dumps(response))
-        else:
+        except:
             response = {
-                "success": False,
-                "id": route + ' [' + scheduledDate + ']',
-                "redirectPath": None,
-            }
+                    "success": False,
+                    "id": "",
+                    "redirectPath": None,
+                }
             return HttpResponse(json.dumps(response))
     else:
-        return render(request, "flights-records.html")
+        context = {}
+        flightCodesList = Flight.objects.values_list("route__flightCode", flat=True).order_by("route__flightCode")
+        print(flightCodesList)
+        context["flightCodesList"] = list(dict.fromkeys(flightCodesList))
+        return render(request, "flights-records.html", context)
 
 
 @csrf_exempt
@@ -516,7 +536,7 @@ def flightRecordInfo(request, route, scheduledDate):
 def flightRegistration(request):
 
     context = {}
-
+    currentDate = date.today()
     # create object of form
     form = FlightForm(request.POST or None, request.FILES or None)
 
@@ -550,5 +570,6 @@ def flightRegistration(request):
         return HttpResponse(json.dumps(response))
 
     context["form"] = form
+    context["currentDate"] = currentDate
 
     return render(request, "flight-registration.html", context)

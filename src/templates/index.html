@@ -68,10 +68,12 @@
                 <td>{{flight.route.flightCode}}</td>
                 <td>
                   {% if flight.status %} 
-                    {% if flight.status != "decolagem finalizada" %}
+                    {% if flight.status == "decolagem finalizada" %}
+                    decolagem finalizada
+                    {% elif flight.status == "cancelado" %} 
+                    cancelado
+                    {% else %}
                     embarque finalizado
-                    {% else %} 
-                    {{ flight.status }}
                     {% endif %}
                   {% else %} 
                   previsto 

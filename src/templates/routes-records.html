@@ -33,6 +33,7 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
     ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <script
       src="https://kit.fontawesome.com/8e20749acf.js"
       crossorigin="anonymous"
@@ -48,7 +49,7 @@
     <link href=  
     "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css"
         rel="stylesheet" type="text/css" /> 
-    <title>Routes records control screen</title>
+    <title>Controle dee Registro de Rotass</title>
   </head>
 
   <body>
@@ -75,7 +76,7 @@
           <div class="h-100 p-5 text-bg-dark rounded-3">
             <h2>Informações de Rota</h2>
             <p>
-              Insira o código de voo abaixo para consultar, editar ou excluir
+              Selecione o código de voo abaixo para consultar, editar ou excluir
               uma rota
             </p>
             <div class="row g-3 align-items-center">
@@ -85,12 +86,12 @@
                 >
               </div>
               <div class="col-auto">
-                <input
-                  type="text"
-                  id="flight-code"
-                  class="form-control"
-                  placeholder="Digite um código de voo"
-                />
+                <select class="form-select form-select" aria-label=".form-select-lg" id="flight-code">
+                  <option selected>Selecione um código de voo</option>
+                  {% for route in routesList %}
+                  <option value="{{route.flightCode}}">{{route.flightCode}}</option>
+                  {% endfor %}
+                </select>
               </div>
               <div class="col-auto">
                 <button class="btn btn-outline-light" id="searchRoute">
@@ -155,16 +156,20 @@
               flightCode: $('#flight-code').val(),
             },
             success: function (response) {
-              console.log(response['success'])
+              let msg;
               if (response.success) {
                 window.location.href = response.redirectPath
               } else {
                 $('#searchModal').modal('show')
-                $('#searchModalLabel').text(
-                  'Não foi possível encontrar a rota informada ' +
-                    response.id +
-                    ' '
-                )
+                if (response.id.includes("Selecione")) {
+                  msg = "Nenhuma rota foi selecionada "
+                }
+                else {
+                  msg = 'Não foi possível encontrar a rota informada ' +
+                  response.id +
+                  ' '
+                }
+                $('#searchModalLabel').text(msg)
                 $('#searchModalLabel').append(
                   '<i class="bi bi-emoji-frown" id = "failureIcon"></i>'
                 )

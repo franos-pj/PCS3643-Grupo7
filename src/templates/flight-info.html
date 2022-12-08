@@ -12,6 +12,7 @@
       integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
   crossorigin="anonymous"></script>
@@ -21,14 +22,17 @@
       integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
       crossorigin="anonymous"
     ></script>
+    <style>
+      .icon {
+        transform: rotate(90deg);
+      }
+    </style>
     <title>Informações de Voo</title>
   </head>
 
   <body>
     <div class="container mt-4 mb-4">
       <div class="row">
-        {% comment %} <h2>Tela com as informações do voo</h2>
-        <p>Edição	e visualização das informações de voo</p> {% endcomment %}
         <div class="d-flex align-items-center justify-content-between">
           <div>
           <h2>Tela com as informações do voo</h2>
@@ -59,7 +63,14 @@
         <div class="h-100 col-md-6 p-5 bg-light rounded-3 mt-4">
           <p><b>Companhia:</b> {{flight.route.airline}}</p>
           <p><b>Código:</b> {{flight.route.flightCode}}</p>
-          <p><b>Horário Previsto:</b> {{flight.route.scheduledTime}}</p>
+          <div>
+            <p>
+              <b>Trajeto:</b>
+              {{flight.route.departureAirport}} <i class="bi bi-arrow-right"></i>
+              {{flight.route.arrivalAirport}}
+            </p>
+          </div>
+          <p><b>Horário Previsto:</b> {{scheduledTimeFormatted}}</p>
           <p><b>Data Prevista:</b> {{flight.scheduledDate}}</p>
           <form method="POST" enctype="multipart/form-data" id="flightUpdateForm">
             <!-- Security token -->
@@ -68,7 +79,7 @@
             <div class="form-group  mt-2">
               <label for="realDate">Data Real</label>
               <input type="date" class="form-control" id="realDate" aria-describedby="realDateHelp" disabled>
-              <small id="realDate" class="form-text text-muted">A data real deve ser igual ou posterior a data prevista</small>
+              <small class="form-text text-muted">A data real deve ser igual ou posterior a data prevista</small>
             </div>
             <div class="form-group  mt-2">
               <label for="realTime">Horário Real</label>
@@ -78,7 +89,7 @@
             <div class="form-group  mt-2">
               <label for="realDate">Data Real</label>
               <input type="date" class="form-control" id="realDate" aria-describedby="realDateHelp">
-              <small id="realDate" class="form-text text-muted">A data real deve ser igual ou posterior a data prevista</small>
+              <small class="form-text text-muted">A data real deve ser igual ou posterior a data prevista</small>
             </div>
             <div class="form-group  mt-2">
               <label for="realTime">Horário Real</label>
@@ -135,10 +146,6 @@
           </div>
           <div class="modal-body">
             <p>Você deseja mesmo atualizar o voo?</p>
-            <small class="text-muted">
-              Esse modal corresponde à tela de Confirmação de Atualização de
-              Voo, no diagrama de telas exposto na documentação.
-            </small>
             <div class="col-md-10">
               <div class="mt-4">
                 <ul class="list-group list-group-flush">
@@ -169,7 +176,7 @@
                   <li class="list-group-item">
                     <div class="row-col-8 d-inline-flex align-items-center">
                       <b>Horário Previsto:</b>
-                      <p id="scheduledTimeConfirmation" style="margin-left: 8px;margin-bottom: 0px">{{flight.route.scheduledTime}}</p>
+                      <p id="scheduledTimeConfirmation" style="margin-left: 8px;margin-bottom: 0px">{{scheduledTimeFormatted}}</p>
                     </div>
                   </li>
                   <li class="list-group-item">
@@ -218,14 +225,18 @@
             <h5 class="modal-title text-success" id="updateConfirmedModalLabel">
               <i class="bi bi-check2-circle"></i>
             </h5>
-            <a href="{% url 'dashboard' %}" type="button" class="btn btn-primary mt-4">
+            <a id="okButton" href="{% url 'dashboard' %}" type="button" class="btn btn-primary mt-4">
               OK
             </a>
           </div>
         </div>
       </div>
+    </div>
     <script type="text/javascript">
       $(document).ready(function () {
+        const currentDate = new Date().toJSON().slice(0, 10)
+        
+        $("#realDate").attr({"min": currentDate})
         $("#updateForm").click(function () {
           $("#realDateConfirmation").text($("#realDate").val());
           $("#statusConfirmation").text($("#status").val());
@@ -252,6 +263,7 @@
             success: function (response) {
               console.log('oi')
               if (response.success) {
+                $('#okButton').attr("href", "{% url 'dashboard' %}")
                 $('#updateConfirmedModalLabel').text("Voo " + response.id + " atualizado com sucesso ")
                 $('#updateConfirmedModalLabel').removeClass("text-danger")
                 $('#updateConfirmedModalLabel').addClass("text-success")
@@ -261,6 +273,7 @@
               else {
                 console.log(response)
                 $('#checkIcon').hide()
+                $('#okButton').attr("href", '{% url "flight" flight.flightId %}')
                 $('#updateConfirmedModalLabel').text("Não possível atualizar o voo " + response.id + " ")
                 $('#updateConfirmedModalLabel').removeClass("text-success")
                 $('#updateConfirmedModalLabel').addClass("text-danger")
