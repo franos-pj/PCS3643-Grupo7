@@ -562,7 +562,7 @@ def flightRegistration(request):
         return HttpResponse(json.dumps(response))
     elif request.method == "POST":
         response = {
-            "id": form.data["route"] + ' [' + form.data["scheduledDate"] + ']',
+            "id": " informado",
             "success": False,
             "error": form.errors.as_json(),
             "error_msg": ""
