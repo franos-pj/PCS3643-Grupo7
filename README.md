@@ -27,13 +27,13 @@ Para executar este projeto em seu computador:
 git clone https://github.com/franos-pj/PCS3643-Grupo7
 ```
 
-1. Crie um ambiente virtual pelo comando: 
+2. Crie um ambiente virtual pelo comando: 
 ```
 cd PCS3643-Grupo7
 python -m venv env
 ```
 
-2. Ative o ambiente usando o comando: 
+3. Ative o ambiente usando o comando: 
 
 **Windows**
 ```
@@ -46,41 +46,46 @@ source env/bin/activate
 ```
 
 
-3. Instale o django no ambiente criado por meio do seguinte comando:
+4. Instale o django no ambiente criado por meio do seguinte comando:
 ```
 pip install django
 ```
 
-4. Crie as migrações pelo comando:
+5. Instale também as bibliotecas necessárias para rodar o sistema (nesse caso, apenas o django-axes):
+```
+pip install django-axes
+```
+
+6. Crie as migrações pelo comando:
 ```
 cd src
 python manage.py makemigrations
 ```
 
-5. Execute as migrações (criar o banco de dados) por meio do comando:
+7. Execute as migrações (criar o banco de dados) por meio do comando:
 ```
 python manage.py migrate
 ```
 
-6. Execute os testes pelo comando:
+8. Execute os testes pelo comando:
 ```
 python manage.py test
 ```
 
-7. Para executar o projeto, rode o comando:
+9. Para executar o projeto, rode o comando:
 ```
 python manage.py runserver
 ```
 
-8. Abra seu navegador a url `http://127.0.0.1:8000`. Uma tela de login será apresentada.
+10. Abra seu navegador a url `http://127.0.0.1:8000`. Uma tela de login será apresentada.
 
 Por default, os seguintes usuários, representados pelos pares `(username, senha)`, existem ao inicio da aplicação:
 
-- `(francisco.mariani, SR71)`: usuário do tipo Piloto
-- `(lucas.garcia, B52)`: usuário do tipo Companhia Aérea
-- `(lucas.palmiro, A380)`: usuário do tipo Torre de Controle
-- `(michelet.chavez, PCS3643)`: usuário do tipo Operador de Voo
-- `(kechi.hirama, PCS3643)`: usuário do tipo Gerente de Operações
+- `(piloto, 1234)`: usuário do tipo Piloto
+- `(funcionario, 1234)`: usuário do tipo Companhia Aérea
+- `(torre, 1234)`: usuário do tipo Torre de Controle
+- `(operador, 1234)`: usuário do tipo Operador de Voo
+- `(gerente, 1234)`: usuário do tipo Gerente de Operações
 
 O login do usuário determina as permissões de navegação dele na aplicação. Isto é, segundo o [Diagramas de Navegação de Telas](./docs/navegacao_telas.md), um usuário do tipo Piloto apenas será capaz de acessar as telas destinadas a ele, por exemplo.
 
