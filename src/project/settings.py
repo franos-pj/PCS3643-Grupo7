@@ -140,7 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / "static"]
 
-
+ALLOWED_HOSTS = []
 # Axes settings
 AXES_COOLOFF_TIME = 0.05        # cooloff in 3 minutes
 AXES_ONLY_USER_FAILURES = True  # lockout based on user, not IP

@@ -269,10 +269,13 @@ def generalReport(request, startDate, endDate):
     context = {}
     start_date_obj = datetime.strptime(startDate, '%Y-%m-%d').date()
     end_date_obj = datetime.strptime(endDate, '%Y-%m-%d').date()
+    print(end_date_obj)
+    print(Flight.objects.all())
     queryset_all = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
     queryset_all = queryset_all.filter(
-        status='aterrissado') | queryset_all.filter(status='cancelado')
+        status='aterrissado') | queryset_all.filter(status='cancelado') | queryset_all.filter(status='decolagem finalizada')
+    print(queryset_all)
     queryset_all = queryset_all.annotate(difDate=ExpressionWrapper(F('realDate') - F('scheduledDate'), output_field=DurationField()),
                                          difTime=ExpressionWrapper(
                                              F('realTime') - F('route__scheduledTime'), output_field=DurationField())
