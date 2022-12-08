@@ -20,6 +20,8 @@ Para o modelo de projeto, o diagrama entidade-relacionamento pode ser consultado
 
 O Relatório dos Testes de Validação elaborado pode ser visto em [Relatório dos Testes de Validação](./docs/relatorio_testes_validacao.pdf).
 
+O *deploy* da versão final do sistema encontra-se atualmente disponível em http://lucasancken.pythonanywhere.com/
+
 ## Guia de Instalação
 
 Para executar este projeto em seu computador:
