@@ -139,9 +139,9 @@ def createUsers(apps, schema_editor):
     manager.groups.add(managerGroup)
 
 
-def loadInitialRoutes(apps, schema_editor):
-    call_command("loaddata", "routes.json")
+# def loadInitialRoutes(apps, schema_editor):
+#     call_command("loaddata", "routes.json")
 
 
-def loadInitialFlights(apps, schema_editor):
-    call_command("loaddata", "flights.json")
+# def loadInitialFlights(apps, schema_editor):
+#     call_command("loaddata", "flights.json")
