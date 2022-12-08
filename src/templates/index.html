@@ -72,6 +72,8 @@
                     decolagem finalizada
                     {% elif flight.status == "cancelado" %} 
                     cancelado
+                    {% elif flight.status == "embarcando" %}
+                    embarque em andamento
                     {% else %}
                     embarque finalizado
                     {% endif %}
