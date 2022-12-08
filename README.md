@@ -18,7 +18,7 @@ O modelo de análise com o diagrama de classes está disponível em [Modelo de C
 
 Para o modelo de projeto, o diagrama entidade-relacionamento pode ser consultado em [Diagrama Entidade-Relacionamento](./docs/images/der.png) e os diagramas de navegação de telas podem ser visualizados em [Diagramas de Navegação de Telas](./docs/navegacao_telas.md).
 
-**O Relatório dos Testes de Validação elaborado pode ser visto em [Relatório dos Testes de Validação](./docs/relatorio_testes_validacao.pdf).**
+O Relatório dos Testes de Validação elaborado pode ser visto em [Relatório dos Testes de Validação](./docs/relatorio_testes_validacao.pdf).
 
 ## Guia de Instalação
 
@@ -90,6 +90,3 @@ Por default, os seguintes usuários, representados pelos pares `(username, senha
 - `(gerente, 1234)`: usuário do tipo Gerente de Operações
 
 O login do usuário determina as permissões de navegação dele na aplicação. Isto é, segundo o [Diagramas de Navegação de Telas](./docs/navegacao_telas.md), um usuário do tipo Piloto apenas será capaz de acessar as telas destinadas a ele, por exemplo.
-
-Os testes usados para validar o funcionamento das unidades da aplicação podem ser vistos em [Plano de Testes de Unidade](./docs/plano_de_testes_unidade.pdf).
-
