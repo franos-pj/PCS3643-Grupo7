@@ -119,29 +119,13 @@
   * a. Sistema exibe mensagem de erro ao operador de voo.
   * b. Fim do fluxo da exceção.
 
-
-
-1. Código de voo já cadastrado (passo 6):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  * b. Fim do fluxo da exceção.
-2. Informações básicas mínimas não foram inseridas (passo 11):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  * b. Fim do fluxo da exceção.
-3. Código de voo ainda não foi cadastrado (Fluxos Alternativos 1, 2 e 3 - passo a):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  * b. Fim do fluxo da exceção.
-4. Informações atualizadas são inconsistentes (Fluxo Alternativo 2 - passo d):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  * b. Sistema cancela a atualização das informações do voo.
-  * c. Fim do fluxo da exceção.
-
 ## Caso de Uso 2
 
 **Nome:** Monitorar voos
 
-**Descrição:** Atualizar e visualizar as informações do voo (_status_ de voo e horários de chegada e partida reais)
+**Descrição:** Visualizar e atualizar as informações do voo (_status_ de voo e horários de chegada e partida reais)
 
-**Evento iniciador:** seleção de monitoramento de voos no sistema
+**Evento iniciador:** redirecionamento para dashboard de monitoramento de voos após login (piloto, torre de controle, ou companhia aérea)
 
 **Atores:** Funcionários das empresas aéreas, piloto do voo e torre de controle
 
@@ -149,42 +133,43 @@
 
 **Sequência de eventos:**
 
-1. Usuário seleciona a opção de monitoramento de voo.
-2. Sistema solicita código de voo.
-3. Usuário insere código de voo.
-4. Sistema verifica se código inserido corresponde a um voo já cadastrado.
-5. Usuário seleciona opção de atualizar _status_ e/ou informações temporais (data de chegada real e horário de chegada real, ou data de partida real e horário de partida real) do voo.
-6. Sistema exibe informações referentes ao voo, e solicita a inserção do _status_ atualizado ou dos horários de chegada/partida reais do voo.
-7. Usuário atualiza _status_ do voo ou insere horários de chegada/partida reais do voo.
-8. Sistema exibe as informações atualizadas e solicita confirmação.
-9. O usuário confirma a atualização das informações.
-10. Sistema verifica a consistência do status atualizado e/ou dos horários de chegada/partida reais inseridos e armazena as informações atualizadas.
-11. Fim do caso de uso.
+1. Sistema exibe o dashboard de monitoramento, com todos os voos no sistema
+2. Usuário seleciona o voo que deseja editar no dashboard
+3. Sistema exibe informações referentes ao voo, e solicita a inserção do _status_ atualizado e/ou dos horários reais do voo (chegada ou partida).
+4. Usuário atualiza _status_ do voo ou insere horários reais do voo.
+5. Sistema exibe as informações atualizadas e solicita confirmação.
+6. Usuário confirma a atualização das informações.
+7. Sistema verifica a consistência do _status_ atualizado e/ou dos horários reais inseridos e armazena as informações atualizadas no banco de dados.
+8. Sistema exibe mensagem de sucesso, notificando que os dados do voo foram atualizados.
+9. Fim do caso de uso.
 
-**Pós-condição:** informações de _status_ e/ou dehorários de chegada/partida reais do voo atualizadas no banco de dados do sistema e exibidas no painel de monitoramento.
+
+**Pós-condição:** informações de _status_ e/ou de horários reais do voo atualizadas no banco de dados do sistema e exibidas no painel de monitoramento.
 
 **Fluxos alternativos:**
 
-1. Usuário seleciona opção de apenas visualizar as informações do voo (passo 6):
+1. Usuário apenas visualiza as informações do voo (passo 3):
   * a. Sistema exibe informações referentes ao voo.
-  * b. Fim do fluxo alternativo.
+  * b. Usuário finaliza a operação de visualização do voo.
+  * c. Fim do fluxo alternativo.
 
 **Exceções:**
 
-1. Código de voo ainda não foi cadastrado (passo 4):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+1. Usuário não tem permissão para acessar aquele voo naquele momento (passo 2):
+  * a. Sistema exibe mensagem de erro ao usuário.
   * b. Fim do fluxo da exceção.
-2. _Status_ de voo ou horários de chegada/partida reais inválidos (passo 11):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
-  * b. Fim do fluxo da exceção.
+2. _Status_ de voo ou horários reais inválidos (passo 7):
+  * a. Sistema exibe mensagem de erro ao usuário.
+  * b. Sistema cancela atualização do voo.
+  * c. Fim do fluxo da exceção.
 
 ## Caso de Uso 3
 
 **Nome:** Gerar relatório administrativo
 
-**Descrição:** Buscar dados históricos sobre os voos realizados no aeroporto durante um período de tempo selecionado e gerar um relatório administrativo reunindo de forma estruturada tais informações. O relatório deve abranger informações referentes ao desempenho dos voos de cada companhia aérea (tempos de atraso) e dados gerais sobre a movimentação do aeroporto (número de voos realizados por rota e por companhia aérea).
+**Descrição:** Buscar dados históricos sobre os voos realizados no aeroporto durante um período de tempo selecionado, e gerar um relatório administrativo reunindo de forma estruturada tais informações. O relatório deve abranger informações referentes ao desempenho dos voos de cada companhia aérea (tempos de atraso) e dados gerais sobre a movimentação do aeroporto (número de voos realizados por rota e por companhia aérea).
 
-**Evento iniciador:** seleção da opção de gerar relatório administrativo no sistema
+**Evento iniciador:** redirecionamento para a tela de geração de relatórios após login (gerente de operações)
 
 **Ator(es):** Gerente de Operação
 
@@ -192,27 +177,25 @@
 
 **Sequência de eventos:**
 
-1. Usuário seleciona a opção de gerar relatório administrativo.
-2. Sistema solicita o período de análise para geração do relatório.
-3. Gerente de Operação insere a data de início e a data de fim da análise.
-4. Sistema verifica a consistência do período de tempo fornecido, a existência de voos no período selecionado e busca as informações históricas.
-5. Sistema solicita o tipo de relatório a ser gerado (geral do aeroporto ou específico à nível de voo).
-6. Usuário seleciona o tipo de relatório geral do aeroporto.
-7. Sistema gera relatório com informações gerais dos voos do aeroporto.
-8. Fim do caso de uso.
+1. Sistema exibe a tela de geração de relatórios, e solicita o período de análise para o relatório, assim como o tipo (geral do aeroporto ou específico à nível de voo).
+2. Gerente de Operação insere a data de início e a data de fim da análise, e o tipo de relatório a ser gerado (geral).
+3. Sistema verifica a consistência do período de tempo fornecido, a existência de voos no período selecionado, e busca as informações históricas.
+4. Sistema gera relatório com informações gerais dos voos do aeroporto.
+5. Fim do caso de uso.
+
 
 **Pós-condição:** relatório administrativo gerado
 
 **Fluxos alternativos:**
 
-1. Usuário seleciona a opção de gerar relatório específico à nível de voo (passo 6):
+1. Usuário seleciona a opção de gerar relatório específico à nível de voo (passo 2):
   * a. Sistema gera relatório com informações específicas dos voos do aeroporto.
   * b. Fim do fluxo alternativo.
 
 **Exceções:**
 
-1. Período de tempo informado para análise apresenta data de início posterior a data de fim ou não há voos no período selecionado (passo 4):
-  * a. Sistema aciona alarme e exibe mensagem de erro ao operador de voo.
+1. Período de tempo informado para análise apresenta data de início posterior a data de fim ou não há voos no período selecionado (passo 3):
+  * a. Sistema exibe mensagem de erro ao operador de voo.
   * b. Fim do fluxo da exceção.
 
 ## Diagrama de Caso de Usos:
