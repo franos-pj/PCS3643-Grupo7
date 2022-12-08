@@ -154,9 +154,7 @@ def flightInfo(request, flightId):
         realTimeUpdate = updateDate['realTime']
         realDateUpdate = updateDate['realDate']
         statusUpdate = updateDate['status']
-        print(len(statusUpdate))
         if (statusUpdate == 'decolagem finalizada' or statusUpdate == 'aterrissado'):
-            print(realTimeUpdate)
             realTimeUpdateObj = None
             if (len(realTimeUpdate) == 0):
                 error = True
@@ -272,7 +270,7 @@ def generalReport(request, startDate, endDate):
     queryset_all = Flight.objects.filter(
         scheduledDate__range=[start_date_obj, end_date_obj])
     queryset_all = queryset_all.filter(
-        status='aterrissado') | queryset_all.filter(status='cancelado')
+        status='aterrissado') | queryset_all.filter(status='cancelado') | queryset_all.filter(status='decolagem finalizada')
     queryset_all = queryset_all.annotate(difDate=ExpressionWrapper(F('realDate') - F('scheduledDate'), output_field=DurationField()),
                                          difTime=ExpressionWrapper(
                                              F('realTime') - F('route__scheduledTime'), output_field=DurationField())
@@ -422,7 +420,6 @@ def flightsRecords(request):
         data = request.POST
         route = data["route"]
         scheduledDate = data["scheduledDate"]
-        print(route, scheduledDate)
         try:
             if Flight.objects.filter(route=route, scheduledDate=scheduledDate).exists():
                 redirectPath = (
@@ -455,7 +452,6 @@ def flightsRecords(request):
     else:
         context = {}
         flightCodesList = Flight.objects.values_list("route__flightCode", flat=True).order_by("route__flightCode")
-        print(flightCodesList)
         context["flightCodesList"] = list(dict.fromkeys(flightCodesList))
         return render(request, "flights-records.html", context)
 
@@ -497,7 +493,6 @@ def flightRecordInfo(request, route, scheduledDate):
                     + data["scheduledDate"]
                     + "/"
                 )
-                print(redirectPath)
                 response = {
                     "id": route + ' [' + scheduledDate + ']',
                     "redirectPath": redirectPath,
